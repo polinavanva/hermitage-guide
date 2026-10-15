@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Гид по Эрмитажу от polinavanva</title>
+<meta name="description" content="12 шедевров Эрмитажа за 2 часа: маршрут, истории и аудиогид от polinavanva.">
+<meta property="og:title" content="Гид по Эрмитажу от polinavanva">
+<meta property="og:description" content="12 шедевров Эрмитажа за 2 часа: маршрут, истории и аудиогид.">
+<meta name="theme-color" content="#2c322b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800;900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #2c322b;
+    --bg2: #343b33;
+    --deep: #232822;
+    --ink: #f2efe7;
+    --muted: #b3b1a6;
+    --line: rgba(255,255,255,.12);
+    --glass: rgba(28,32,27,.5);
+    --display: "Unbounded", "Arial Black", sans-serif;
+    --sans: "Manrope", "Helvetica Neue", Arial, sans-serif;
+    --ease: cubic-bezier(.2,.7,.2,1);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { color: inherit; }
+  button { font-family: inherit; }
+  .up { text-transform: uppercase; letter-spacing: .02em; }
+
+  /* ---------- buttons & pills ---------- */
+  .pill { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; padding: 12px 20px; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .02em; text-decoration: none; border: 0; cursor: pointer; transition: transform .3s var(--ease), background .3s; white-space: nowrap; }
+  .pill:hover { transform: translateY(-2px); }
+  .pill.white { background: #fff; color: #1d211c; }
+  .pill.ghost { background: rgba(255,255,255,.2); color: #fff; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .glassbox { background: var(--glass); border: 1px solid var(--line); border-radius: 999px; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+
+  /* ---------- liquid glass ---------- */
+
+  /* ---------- hero ---------- */
+  .hero { position: relative; height: 100svh; min-height: 620px; overflow: hidden; border-radius: 0 0 28px 28px; background: var(--deep); }
+  .slides { position: absolute; inset: 0; }
+  .slide { position: absolute; inset: 0; background-size: cover; background-position: center 30%; opacity: 0; transition: opacity 2.4s ease-in-out; will-change: transform, opacity; }
+  .slide.on { opacity: 1; }
+  .slide.zout { animation: zoomOut 11s linear forwards; }
+  .slide.zin { animation: zoomIn 11s linear forwards; }
+  @keyframes zoomOut { from { transform: scale(1.16); } to { transform: scale(1.0); } }
+  @keyframes zoomIn { from { transform: scale(1.0); } to { transform: scale(1.16); } }
+  .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(18,22,18,.6) 0%, rgba(18,22,18,.2) 38%, rgba(18,22,18,.35) 70%, rgba(44,50,43,.96) 100%); pointer-events: none; }
+
+  .nav { position: absolute; z-index: 5; top: 18px; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; }
+  .navlinks { display: flex; gap: 2px; padding: 5px; border-radius: 999px; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+  .navlinks a { padding: 10px 16px; border-radius: 999px; font-weight: 600; font-size: 13px; text-transform: uppercase; text-decoration: none; transition: background .3s; }
+  .navlinks a:hover { background: rgba(255,255,255,.14); }
+  .navright { padding: 5px; display: flex; margin-left: auto; }
+
+  .hero-inner { position: absolute; z-index: 4; left: 0; right: 0; bottom: 0; padding: 0 22px 34px; }
+  .hero h1 { font-family: var(--display); font-weight: 900; text-transform: uppercase; line-height: .98; margin: 0; font-size: clamp(36px, 10.5vw, 116px); letter-spacing: -.01em; }
+  .hero h1 .line { display: block; overflow: hidden; }
+  .hero h1 .line span { display: inline-block; transform: translateY(105%); animation: rise 1.1s var(--ease) forwards; }
+  .hero h1 .line:nth-child(2) span { animation-delay: .15s; }
+  @keyframes rise { to { transform: none; } }
+  .by { display: inline-block; margin-top: 14px; font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: lowercase; color: rgba(255,255,255,.8); text-decoration: none; opacity: 0; animation: fade 1s .7s forwards; }
+  .by:hover { color: #fff; }
+  @keyframes fade { to { opacity: 1; } }
+  .features { display: flex; margin: 28px 0 0; opacity: 0; animation: fade 1s .9s forwards; }
+  .features div { padding: 0 20px; border-left: 1px solid rgba(255,255,255,.25); text-align: center; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
+  .features div:first-child { padding-left: 0; border-left: 0; }
+  .features svg { display: block; width: 20px; height: 20px; margin: 0 auto 6px; fill: none; stroke: #fff; stroke-width: 1.7; }
+  .hero-bottom { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; margin-top: 34px; flex-wrap: wrap; opacity: 0; animation: fade 1s 1.1s forwards; }
+  .ctas { display: flex; gap: 4px; padding: 5px; border-radius: 999px; }
+  .where { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; }
+  .dots { display: flex; gap: 7px; justify-content: center; margin-top: 22px; }
+  .dots button { width: 7px; height: 7px; border-radius: 50%; border: 0; padding: 0; background: rgba(255,255,255,.35); cursor: pointer; transition: background .3s, transform .3s; }
+  .dots button.on { background: #fff; transform: scale(1.25); }
+
+  /* ---------- strip of works ---------- */
+  .strip { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; border-bottom: 1px solid var(--line); scrollbar-width: none; }
+  .strip::-webkit-scrollbar { display: none; }
+  .strip a { flex: 0 0 auto; width: 300px; display: flex; align-items: center; gap: 16px; padding: 20px 22px; border-right: 1px solid var(--line); text-decoration: none; scroll-snap-align: start; transition: background .3s; }
+  .strip a:hover { background: rgba(255,255,255,.05); }
+  .strip a:hover .thumb { transform: scale(1.06) rotate(-2deg); }
+  .thumb { flex: 0 0 104px; width: 104px; height: 62px; object-fit: cover; object-position: center 30%; transition: transform .5s var(--ease); }
+  .s0 { border-radius: 60% 40% 55% 45% / 55% 45% 55% 45%; }
+  .s1 { border-radius: 30px 8px 30px 8px; }
+  .s2 { border-radius: 50%; }
+  .s3 { border-radius: 40% 60% 35% 65% / 60% 40% 60% 40%; }
+  .strip .t { font-size: 16px; font-weight: 600; line-height: 1.25; }
+  .strip .s { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+  /* ---------- route bar (sticky) ---------- */
+  .routebar { position: fixed; z-index: 30; top: 0; left: 0; right: 0; background: rgba(36,41,35,.86); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); transform: translateY(-110%); transition: transform .45s var(--ease); }
+  .routebar.show { transform: none; }
+  .chips { display: flex; gap: 6px; overflow-x: auto; padding: 10px 14px; scrollbar-width: none; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chips a { flex: 0 0 auto; padding: 7px 13px; border-radius: 999px; border: 1px solid var(--line); font-size: 12px; font-weight: 700; text-decoration: none; color: var(--muted); transition: all .35s; }
+  .chips a.done { color: var(--ink); border-color: rgba(255,255,255,.3); }
+  .chips a.on { background: #fff; color: #1d211c; border-color: #fff; }
+  .progress { height: 3px; background: rgba(255,255,255,.08); }
+  .progress i { display: block; height: 100%; width: 0; background: #fff; }
+
+  /* ---------- sections ---------- */
+  .wrap { max-width: 900px; margin: 0 auto; padding: 0 22px; }
+  .kicker { display: inline-block; font-size: 12px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+  .h2 { font-family: var(--display); font-weight: 800; text-transform: uppercase; line-height: 1.02; letter-spacing: -.01em; font-size: clamp(28px, 6.4vw, 56px); margin: 18px 0 0; }
+
+  .intro { padding: 90px 0 70px; }
+  .intro p { font-size: clamp(18px, 2.4vw, 22px); line-height: 1.6; margin: 22px 0 0; }
+
+  /* scheme */
+  .scheme { padding: 40px 0 90px; }
+  .scheme .lead { color: var(--muted); font-size: 16px; margin: 14px 0 0; }
+  .plancard { margin-top: 30px; }
+  .plan { display: block; width: 100%; height: auto; }
+  .plan text { font-family: var(--sans); fill: rgba(242,239,231,.42); font-size: 6.5px; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+  .plan .bldg { fill: rgba(255,255,255,.035); stroke: rgba(255,255,255,.5); stroke-width: 1.3; }
+  .plan .room { fill: transparent; stroke: rgba(255,255,255,.16); stroke-width: .6; }
+  .plan .yard { fill: rgba(0,0,0,.18); stroke: rgba(255,255,255,.1); stroke-width: .6; }
+  .plan .stair { fill: rgba(255,255,255,.06); stroke: rgba(255,255,255,.12); stroke-width: .6; }
+  .plan .stop { fill: rgba(255,255,255,.07); stroke: rgba(255,255,255,.55); stroke-width: 1; cursor: pointer; transition: fill .5s, stroke .5s; }
+  .plan .stop:hover { fill: rgba(255,255,255,.16); }
+  .plan .stop.done { fill: rgba(255,255,255,.2); }
+  .plan .stop.on { fill: #fff; stroke: #fff; }
+  .plan text.sn { font-family: var(--display); font-weight: 800; font-size: 9px; fill: rgba(242,239,231,.9); transition: fill .5s; }
+  .plan text.sn.on { fill: #1d211c; }
+  .plan text.bl { font-size: 7px; font-weight: 700; letter-spacing: .14em; fill: rgba(242,239,231,.55); }
+  .plan text.yl { font-size: 6px; letter-spacing: .1em; fill: rgba(242,239,231,.28); }
+  .plan .rbase { fill: none; stroke: rgba(255,255,255,.28); stroke-width: 1.4; stroke-dasharray: 2 3; stroke-linecap: round; }
+  .plan .rprog { fill: none; stroke: #fff; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 3px rgba(255,255,255,.55)); }
+  .plan .dot { fill: #fff; }
+  .plan .halo { fill: none; stroke: #fff; stroke-width: 1.2; transform-box: fill-box; transform-origin: center; animation: halo 1.8s ease-out infinite; }
+  @keyframes halo { from { transform: scale(1); opacity: .8; } to { transform: scale(3.2); opacity: 0; } }
+  .plan .tip rect { fill: rgba(28,32,27,.92); stroke: rgba(255,255,255,.45); stroke-width: .7; }
+  .plan .tip text { fill: #fff; font-size: 7.5px; font-weight: 700; text-anchor: start; }
+  .plan .tip { transition: opacity .4s; }
+  .plan .ent { font-size: 7px; font-weight: 700; letter-spacing: .1em; fill: rgba(242,239,231,.7); }
+  .nowcap { display: flex; align-items: center; gap: 12px; margin: 14px 6px 4px; font-size: 14px; min-height: 22px; }
+  .nowcap b { font-family: var(--display); font-weight: 800; font-size: 12px; text-transform: uppercase; white-space: nowrap; }
+  .nowcap span { color: var(--muted); }
+  .legend { list-style: none; margin: 22px 0 0; padding: 0; display: grid; gap: 8px; }
+  .legend li a { display: grid; grid-template-columns: 92px 1fr; gap: 12px; align-items: baseline; padding: 12px 16px; border-radius: 18px; text-decoration: none; border: 1px solid var(--line); transition: background .4s, border-color .4s, color .4s; }
+  .legend li a b { font-family: var(--display); font-weight: 800; font-size: 13px; text-transform: uppercase; }
+  .legend li a span { font-size: 15px; }
+  .legend li.done a { border-color: rgba(255,255,255,.3); }
+  .legend li.on a { background: #fff; color: #1d211c; border-color: #fff; }
+  .legend .start a { grid-template-columns: 92px 1fr; color: var(--muted); }
+  .chips button.planbtn { flex: 0 0 auto; padding: 7px 13px; border-radius: 999px; border: 1px solid rgba(255,255,255,.5); background: transparent; font-size: 12px; font-weight: 700; color: #fff; cursor: pointer; }
+  .planlb { position: fixed; inset: 0; z-index: 90; background: rgba(20,24,20,.82); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); display: none; flex-direction: column; justify-content: center; padding: 70px 14px 24px; }
+  .planlb.open { display: flex; animation: fade .3s forwards; opacity: 0; }
+  .planlb .close { position: absolute; top: 16px; right: 16px; }
+  .planlb .plancard { margin: 0 auto; width: 100%; max-width: 760px; }
+
+  /* work cards */
+  .work { padding: 80px 0; border-top: 1px solid var(--line); }
+  .frame { position: relative; margin-top: 24px; border-radius: 26px; overflow: hidden; background: var(--deep); cursor: zoom-in; }
+  .frame img { display: block; width: 100%; height: auto; max-height: 82vh; object-fit: contain; }
+  .zoomhint { position: absolute; right: 14px; bottom: 14px; padding: 9px 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; display: flex; align-items: center; gap: 7px; }
+  .zoomhint svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 2; }
+  .credit { font-size: 11px; color: var(--muted); text-align: right; margin-top: 8px; }
+  .work .h2 { font-size: clamp(24px, 5.4vw, 46px); margin-top: 30px; }
+  .meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 22px; }
+  .meta b { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  .meta span { display: block; font-size: 14px; font-weight: 600; line-height: 1.35; margin-top: 3px; }
+  .tech { font-size: 13px; color: var(--muted); margin-top: 12px; }
+  .work .text { font-size: 18px; line-height: 1.65; margin: 26px 0 0; }
+  .nextlink { display: inline-block; margin-top: 28px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; text-decoration: none; color: var(--muted); transition: color .3s; }
+  .nextlink:hover { color: var(--ink); }
+
+  /* player */
+  .player { margin-top: 30px; display: grid; grid-template-columns: 56px 1fr auto; align-items: center; gap: 14px; }
+  .player .play { width: 56px; height: 56px; border-radius: 50%; border: 0; background: #fff; color: #1d211c; display: grid; place-items: center; cursor: pointer; padding: 0; transition: transform .3s var(--ease); }
+  .player .play:hover { transform: scale(1.06); }
+  .player .play svg { width: 20px; height: 20px; }
+  .ico-pause { display: none; }
+  .player.playing .ico-play { display: none; }
+  .player.playing .ico-pause { display: block; }
+  .pmid { min-width: 0; }
+  .ptop { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .ptitle { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; display: flex; align-items: center; gap: 10px; }
+  .ptime { font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .bar { position: relative; height: 20px; cursor: pointer; touch-action: none; }
+  .bar::before { content: ""; position: absolute; left: 0; right: 0; top: 9px; height: 2px; border-radius: 2px; background: rgba(255,255,255,.18); }
+  .fill { position: absolute; left: 0; top: 9px; height: 2px; width: 0; background: #fff; border-radius: 2px; }
+  .knob { position: absolute; top: 4px; left: 0; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; background: #fff; }
+  .speeds { display: flex; gap: 4px; }
+  .speeds button { border: 1px solid var(--line); background: transparent; color: var(--ink); border-radius: 999px; padding: 6px 10px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all .3s; }
+  .speeds button.on { background: #fff; color: #1d211c; border-color: #fff; }
+  .player.missing { opacity: .55; }
+  .player.missing .play { cursor: default; }
+  .player.missing .ptitle::after { content: "· аудио скоро появится"; text-transform: none; font-weight: 500; letter-spacing: 0; color: var(--muted); }
+
+  /* footer */
+  footer { padding: 90px 0 60px; border-top: 1px solid var(--line); text-align: center; }
+  footer .h2 { font-size: clamp(30px, 8vw, 70px); margin: 20px 0 28px; }
+  .credits { margin-top: 50px; font-size: 12px; color: var(--muted); line-height: 1.7; }
+
+  /* lightbox */
+  .lb { position: fixed; inset: 0; z-index: 100; background: rgba(15,18,15,.96); display: none; touch-action: none; }
+  .lb.open { display: block; animation: fade .3s forwards; opacity: 0; }
+  .lb img { position: absolute; top: 50%; left: 50%; max-width: 94vw; max-height: 86vh; transform: translate(-50%, -50%); cursor: zoom-in; user-select: none; -webkit-user-drag: none; transition: transform .35s var(--ease); }
+  .lb.zoomed img { cursor: grab; }
+  .lb.dragging img { transition: none; cursor: grabbing; }
+  .lb .close { position: absolute; top: 16px; right: 16px; z-index: 2; }
+  .lb .hint { position: absolute; left: 0; right: 0; bottom: 18px; text-align: center; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; font-weight: 600; }
+
+  /* scroll reveal */
+  .reveal { opacity: 0; transform: translateY(34px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+  .reveal.in { opacity: 1; transform: none; }
+  .develop img { opacity: 0; filter: sepia(.6) brightness(1.7) contrast(.6) blur(10px); transform: scale(1.03); transition: opacity 1.4s ease, filter 2.8s ease, transform 2.8s var(--ease); }
+  .develop.in img { opacity: 1; filter: none; transform: none; }
+
+  @media (max-width: 760px) {
+    .navlinks { display: none; }
+    .features div { padding: 0 12px; font-size: 11px; }
+    .hero-bottom { flex-direction: column; align-items: flex-start; }
+    .strip a { width: 260px; }
+    .meta { grid-template-columns: 1fr 1fr; }
+    .meta div:first-child { grid-column: span 2; }
+    .player { grid-template-columns: 52px 1fr; }
+    .player .play { width: 52px; height: 52px; }
+    .speeds { grid-column: 1 / -1; justify-content: flex-end; }
+    body { font-size: 16px; }
+    .work .text { font-size: 17px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .reveal, .develop img, .hero h1 .line span, .by, .features, .hero-bottom { opacity: 1 !important; transform: none !important; filter: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="routebar" id="routebar">
+  <div class="chips" id="chips"></div>
+  <div class="progress"><i id="progress"></i></div>
+</div>
+
+<header class="hero" id="top">
+  <div class="slides" id="slides"></div>
+  <nav class="nav">
+    <div class="navlinks glassbox">
+      <a href="#about">Приветствие</a>
+      <a href="#route">Маршрут</a>
+      <a href="#works">Аудиогид</a>
+    </div>
+    <div class="navright glassbox"><a class="pill white" href="https://instagram.com/polinavanva" target="_blank" rel="noopener">@polinavanva</a></div>
+  </nav>
+  <div class="hero-inner">
+    <h1><span class="line"><span>Гид по</span></span><span class="line"><span>Эрмитажу</span></span></h1>
+    <a class="by" href="https://instagram.com/polinavanva" target="_blank" rel="noopener">polinavanva</a>
+    <div class="features">
+      <div><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/></svg>12 работ</div>
+      <div><svg viewBox="0 0 24 24"><path d="M4 15v-3a8 8 0 0116 0v3"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg>Аудиогид</div>
+      <div><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>2 часа</div>
+    </div>
+    <div class="hero-bottom">
+      <div class="ctas glassbox"><a class="pill ghost" href="#route">Схема маршрута</a><a class="pill white" href="#w1">Начать</a></div>
+      <div class="where">Государственный Эрмитаж · залы 214–254</div>
+    </div>
+    <div class="dots" id="dots"></div>
+  </div>
+</header>
+
+<div class="strip" id="strip"></div>
+
+<section class="wrap intro" id="about">
+  <span class="kicker lg reveal">Приветствие</span>
+  <p class="reveal">Привет! Я — Полина, искусствовед, живу в Петербурге. Я люблю Эрмитаж за то, что каждый раз нахожу здесь что-то новое. Но музей огромный: если идти куда глаза глядят, за два часа устанешь и главного не увидишь.</p>
+  <p class="reveal">Поэтому я собрала 12 работ, к которым возвращаюсь снова и снова, и истории о них, которые рассказала бы тебе, если бы мы пошли вместе. Считай, что так и есть: надевай наушники и следуй маршруту 🤍</p>
+</section>
+
+<section class="wrap scheme" id="route">
+  <span class="kicker lg reveal">Схема</span>
+  <h2 class="h2 reveal">План второго этажа</h2>
+  <p class="lead reveal">Линия маршрута прорисовывается, пока ты листаешь. Подсвеченный зал — тот, где ты сейчас. Нажми на зал, чтобы перейти к его картинам.</p>
+  <div class="plancard lg reveal" id="planMain"></div>
+  <ol class="legend reveal" id="legend"></ol>
+</section>
+
+<div class="planlb" id="planlb" aria-hidden="true">
+  <button class="pill white close" id="planClose">Закрыть ✕</button>
+  <div class="plancard lg" id="planPop"></div>
+</div>
+
+<main id="works"></main>
+
+<footer class="wrap">
+  <span class="kicker lg reveal">Конец маршрута</span>
+  <h2 class="h2 reveal">До встречи<br>в музее</h2>
+  <a class="pill white reveal" href="https://instagram.com/polinavanva" target="_blank" rel="noopener">@polinavanva</a>
+  <div class="credits">
+    Экспозиция музея может меняться — номера залов сверены в октябре 2026.<br>
+    Изображения картин: Wikimedia Commons, общественное достояние.<br>
+    Фото «Трёх граций»: Государственный Эрмитаж, общественное достояние. Фото «Скорчившегося мальчика»: © Ad Meskens / Wikimedia Commons, CC BY-SA 4.0.
+  </div>
+</footer>
+
+<div class="lb" id="lb" aria-hidden="true">
+  <button class="pill white close" id="lbClose">Закрыть ✕</button>
+  <img id="lbImg" alt="">
+  <div class="hint">Нажми на картину, чтобы приблизить · тяни, чтобы рассмотреть</div>
+</div>
+
+<script>
+/* ======== ДАННЫЕ: тексты и картины. Править можно прямо здесь ======== */
+var WORKS = [
+  { hall: "214", short: "Мадонна Литта", title: "Мадонна Литта",
+    author: "Леонардо да Винчи", year: "1490–1491 (часто датируют серединой 1490-х)",
+    tech: "Темпера, 42 × 33 см · Большой (Старый) Эрмитаж, второй этаж",
+    text: "Картина чуть больше листа А3, но за ней в Эрмитаже всегда толпа. Её назвали по фамилии миланских герцогов Литта. Сто пятьдесят лет спорят, сам ли Леонардо её написал: часть исследователей уверена, что Младенца дописывал ученик. А подготовительный рисунок головы Мадонны хранится в Лувре.",
+    img: "Leonardo_da_Vinci_attributed_-_Madonna_Litta.jpg" },
+  { hall: "214", short: "Мадонна Бенуа", title: "Мадонна с цветком («Мадонна Бенуа»)",
+    author: "Леонардо да Винчи", year: "около 1478–1480",
+    tech: "Масло, 48 × 31,5 см · Большой (Старый) Эрмитаж",
+    text: "Это одна из самых ранних картин Леонардо. Картина долго жила в частной российской семье. По легенде, её купили в Астрахани у бродячих итальянских музыкантов.",
+    img: "Leonardo_da_Vinci_Benois_Madonna.jpg" },
+  { hall: "217", short: "Юдифь", title: "Юдифь",
+    author: "Джорджоне", year: "около 1504",
+    tech: "Масло, холст (переведена с дерева), 144 × 68 см · Большой (Старый) Эрмитаж",
+    text: "Это единственная картина в России, которую все специалисты единодушно признают работой Джорджоне, а бесспорных его работ во всём мире считаные единицы. Почти двести лет её считали Рафаэлем: под его именем её и купила Екатерина II в 1772 году.",
+    img: "Giorgione_-_Judith_-_Eremitage.jpg" },
+  { hall: "221", short: "Даная", title: "Даная",
+    author: "Тициан (при участии мастерской)", year: "около 1554",
+    tech: "Масло, холст · Большой (Старый) Эрмитаж, зал Тициана",
+    text: "Тициан писал «Данаю» не один раз: разные версии хранятся в Неаполе, Мадриде, Вене и Петербурге. Эрмитажная попала в Россию в 1772 году из той же парижской коллекции Кроза, что и «Юдифь» Джорджоне.",
+    img: "Titian_-_Danae_(Hermitage_Version).jpg" },
+  { hall: "221", short: "Кающаяся Мария Магдалина", title: "Кающаяся Мария Магдалина",
+    author: "Тициан", year: "около 1565 (1560-е)",
+    tech: "Масло, холст, 119 × 97 см · Большой (Старый) Эрмитаж, зал Тициана",
+    text: "Эту картину Тициан не продал, а оставил себе. После смерти художника её купил венецианский патриций Кристофоро Барбариго, и почти 300 лет она оставалась в этой семье. В 1850 году Николай I купил коллекцию Барбариго, и картина переехала в Петербург. Тициан написал много «Магдалин», но именно эту выбрал для себя.",
+    img: "Titian_-_Penitent_Magdalene_(Hermitage).jpg" },
+  { hall: "229", short: "Мадонна Конестабиле", title: "Мадонна Конестабиле",
+    author: "Рафаэль", year: "1502–1504",
+    tech: "Темпера, переведена с дерева на холст, 17,5 × 18 см (тондо, круглая картина) · Новый Эрмитаж, зал Рафаэля",
+    text: "Самая маленькая картина нашего маршрута, меньше листа А5, и одна из самых дорогих покупок Эрмитажа в XIX веке: в 1871 году за неё заплатили 310 000 франков. Рафаэлю, когда он её писал, было около двадцати.",
+    img: "Raffael_024.jpg" },
+  { hall: "230", short: "Скорчившийся мальчик", title: "Скорчившийся мальчик",
+    author: "Микеланджело Буонарроти", year: "около 1530–1534",
+    tech: "Мрамор, высота 54 см · Новый Эрмитаж",
+    text: "Это единственная работа Микеланджело в России, и она не закончена. На мраморе видны следы резца, а часть фигуры так и осталась грубым камнем, из которого будто бы только начинает выходить тело. В Россию его привезла Екатерина II: в 1785 году она купила коллекцию английского банкира Лайда Брауна.",
+    img: "Hermitage_Michelangelo_statue_Crouching_Boy_01.jpg", credit: "Фото: © Ad Meskens / Wikimedia Commons, CC BY-SA 4.0" },
+  { hall: "232", short: "Юноша с лютней", title: "Юноша с лютней («Лютнист»)",
+    author: "Караваджо", year: "около 1595–1596",
+    tech: "Масло, холст, 94 × 119 см · Новый Эрмитаж",
+    text: "Это единственная картина Караваджо в России. Долгое время картину называли «Лютнистка», потому что никто не мог понять, кто изображён, юноша или девушка. Биограф Джованни Бальоне писал, что сам Караваджо называл своего «Лютниста» лучшим, что он когда-либо написал. Правда, до сих пор спорят, о какой из версий шла речь.",
+    img: "Michelangelo_Caravaggio_020.jpg" },
+  { hall: "241", short: "Три грации", title: "Три грации",
+    author: "Антонио Канова", year: "1813–1816",
+    tech: "Мрамор, высота 182 см · Новый Эрмитаж",
+    text: "Скульптуру заказала Жозефина, первая жена Наполеона, но так её и не увидела: она умерла в 1814 году, до окончания работы. Её сын забрал статую себе, а через его потомков, герцогов Лейхтенбергских, породнившихся с Романовыми, «Грации» попали в Петербург.",
+    img: "Canova_-_The_Three_Graces,_between_1813_and_1816,_Н.ск-506.jpg", credit: "" },
+  { hall: "247", short: "Персей и Андромеда", title: "Персей освобождает Андромеду",
+    author: "Питер Пауль Рубенс", year: "1620–1622",
+    tech: "Масло, холст (переведена с дерева), 99,5 × 139 см · Новый Эрмитаж, зал Рубенса",
+    text: "Картина — триумф в прямом смысле: Рубенс совместил в одной сцене несколько моментов мифа сразу. В Эрмитаж картина попала в 1769 году вместе с коллекцией саксонского графа Брюля, которую Екатерина II купила целиком. Эта покупка заложила основу эрмитажной фламандской живописи.",
+    img: "Peter_Paul_Rubens_-_Perseus_and_Andromeda_(Hermitage_Museum).jpg" },
+  { hall: "254", short: "Даная", title: "Даная",
+    author: "Рембрандт ван Рейн", year: "1636, переписана около 1646–1647",
+    tech: "Масло, холст · Новый Эрмитаж, зал Рембрандта",
+    text: "15 июня 1985 года посетитель плеснул в «Данаю» серной кислотой и дважды ударил её ножом. Было уничтожено около трети красочного слоя. Реставрация заняла 12 лет, и только в 1997 году картина вернулась в зал, теперь под бронированным стеклом.",
+    img: "Rembrandt_Harmensz._van_Rijn_026.jpg" },
+  { hall: "254", short: "Возвращение блудного сына", title: "Возвращение блудного сына",
+    author: "Рембрандт ван Рейн", year: "около 1666–1669",
+    tech: "Масло, холст, 260 × 203 см · Новый Эрмитаж, зал Рембрандта",
+    text: "Одна из последних картин Рембрандта. Он писал её, когда уже потерял всё: деньги, дом, жену, любимую подругу и единственного сына. Картина почти в человеческий рост, и в ней почти ничего не происходит: отец обнимает вернувшегося сына. Но перед ней люди стоят часами.",
+    img: "Rembrandt_Harmensz_van_Rijn_-_Return_of_the_Prodigal_Son_-_Google_Art_Project.jpg" }
+];
+var HERO = [0, 3, 7, 11]; /* какие картины крутятся на первом экране */
+var BUILDINGS = { "214": "Большой (Старый) Эрмитаж", "229": "Новый Эрмитаж · через Лоджии Рафаэля" };
+
+function imgUrl(file, w) { return "https://commons.wikimedia.org/wiki/Special:FilePath/" + file + "?width=" + w; }
+function pad(n) { return (n < 10 ? "0" : "") + n; }
+function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+
+/* ---------- build: hero slides ---------- */
+var slidesEl = document.getElementById("slides"), dotsEl = document.getElementById("dots");
+HERO.forEach(function (idx, i) {
+  var s = document.createElement("div");
+  s.className = "slide" + (i === 0 ? " on" : "");
+  s.style.backgroundImage = "url('" + imgUrl(WORKS[idx].img, 2000) + "')";
+  slidesEl.appendChild(s);
+  var d = document.createElement("button");
+  d.setAttribute("aria-label", WORKS[idx].short);
+  if (i === 0) d.className = "on";
+  d.onclick = function () { showSlide(i, true); };
+  dotsEl.appendChild(d);
+});
+/* смена картин: одна отдаляется, следующая приближается, и так по кругу.
+   Уходящая картина продолжает движение, пока растворяется, — поэтому без скачков */
+var cur = 0, timer, step = 0, INTERVAL = 7000, FADE = 2400;
+function startMotion(el) {
+  el.classList.remove("zout", "zin");
+  void el.offsetWidth;
+  el.classList.add(step % 2 === 0 ? "zout" : "zin");
+  step++;
+}
+startMotion(slidesEl.children[0]);
+function showSlide(i, manual) {
+  if (i === cur) return;
+  var ss = slidesEl.children, ds = dotsEl.children, prev = ss[cur];
+  prev.classList.remove("on"); ds[cur].classList.remove("on");
+  setTimeout(function () { if (!prev.classList.contains("on")) prev.classList.remove("zout", "zin"); }, FADE + 200);
+  cur = i;
+  startMotion(ss[cur]);
+  ss[cur].classList.add("on"); ds[cur].classList.add("on");
+  if (manual) { clearInterval(timer); timer = setInterval(nextSlide, INTERVAL); }
+}
+function nextSlide() { showSlide((cur + 1) % HERO.length); }
+timer = setInterval(nextSlide, INTERVAL);
+
+/* ---------- build: strip ---------- */
+var strip = document.getElementById("strip");
+WORKS.forEach(function (w, i) {
+  var a = document.createElement("a");
+  a.href = "#w" + (i + 1);
+  a.innerHTML = '<img class="thumb s' + (i % 4) + '" alt="" loading="lazy" src="' + esc(w.local || imgUrl(w.img, 300)) + '" data-fallback="' + esc(imgUrl(w.img, 300)) + '">' +
+    '<span><span class="t">' + esc(w.short) + '</span><span class="s" style="display:block">' + esc(w.author) + ' · зал ' + w.hall + '</span></span>';
+  strip.appendChild(a);
+});
+
+/* ---------- build: route scheme + chips ---------- */
+var halls = [];
+WORKS.forEach(function (w, i) {
+  var h = halls[halls.length - 1];
+  if (!h || h.hall !== w.hall) halls.push(h = { hall: w.hall, items: [] });
+  h.items.push(i);
+});
+var chips = document.getElementById("chips"), legend = document.getElementById("legend");
+var planBtn = document.createElement("button");
+planBtn.className = "planbtn";
+planBtn.textContent = "План ◎";
+chips.appendChild(planBtn);
+var startLegend = document.createElement("li");
+startLegend.className = "start";
+startLegend.innerHTML = '<a href="#route"><b>Вход</b><span>Иорданская лестница → парадные залы Зимнего дворца → Малый Эрмитаж, часы «Павлин» → Старый Эрмитаж</span></a>';
+legend.appendChild(startLegend);
+halls.forEach(function (h, k) {
+  var li = document.createElement("li");
+  li.dataset.hall = h.hall;
+  li.innerHTML = '<a href="#w' + (h.items[0] + 1) + '"><b>Зал ' + h.hall + '</b><span>' +
+    h.items.map(function (i) { return esc(WORKS[i].short); }).join(' · ') + (k === halls.length - 1 ? ' · финал' : '') + '</span></a>';
+  legend.appendChild(li);
+  var c = document.createElement("a");
+  c.href = "#w" + (h.items[0] + 1);
+  c.dataset.hall = h.hall;
+  c.textContent = "Зал " + h.hall;
+  chips.appendChild(c);
+});
+
+/* ---------- план второго этажа (перерисован по схеме Эрмитажа) ---------- */
+/* залы: [номер, x, y, ширина, высота, тип] — координаты в единицах схемы */
+var ROOMS = [
+  /* Малый Эрмитаж */
+  ["204",670,32,80,54], ["259",668,88,22,105], ["261",668,193,22,110], ["262",668,303,22,102],
+  ["255",735,88,17,105], ["256",735,193,17,110], ["257",735,303,17,102], ["",690,88,45,317,"yard"], ["258",672,405,78,48],
+  /* Большой (Старый) Эрмитаж */
+  ["206",770,32,35,58], ["207",805,32,43,24], ["208",848,32,12,24], ["209",860,32,22,24], ["210",882,32,18,24],
+  ["211",900,32,16,24], ["212",916,32,18,24], ["213",934,32,24,24], ["214",958,32,55,24], ["215",1013,32,30,24], ["216",1043,32,22,24],
+  ["",805,56,43,26,"stair"], ["217",848,56,37,26], ["218",885,56,25,26], ["219",910,56,20,26], ["220",930,56,23,26], ["221",953,56,30,26],
+  ["222",983,56,25,32], ["223",1008,56,25,32], ["224",1033,56,32,34],
+  /* Новый Эрмитаж */
+  ["254",775,95,30,95], ["253",805,95,17,95], ["",822,95,186,98,"yard"], ["229",1008,95,42,98], ["227",1050,90,15,210],
+  ["252",775,193,37,29], ["240",812,193,35,29], ["236",847,193,20,29], ["235",867,193,20,29], ["234",887,193,20,29],
+  ["233",907,193,20,29], ["232",927,193,20,29], ["231",947,193,18,29], ["230",965,193,43,29],
+  ["251",775,222,37,30], ["239",812,222,58,30], ["238",870,222,95,30], ["237",965,222,85,30],
+  ["250",775,252,37,28], ["241",812,252,196,28], ["242",1008,252,42,28],
+  ["249",775,280,47,105], ["",822,280,71,105,"yard"], ["",893,280,47,105,"stair"], ["",940,280,68,105,"yard"], ["243",1008,280,57,105],
+  ["248",775,385,50,46], ["247",825,385,68,46], ["246",893,385,47,46], ["245",940,385,68,46], ["244",1008,385,57,46]
+];
+/* линия маршрута: из Зимнего дворца через Малый Эрмитаж в Старый и Новый */
+var ROUTE = [[640,268],[679,268],[679,163],[679,75],[713,58],[760,45],[787,45],[986,45],[986,70],[866,70],[968,70],
+  [996,72],[1020,72],[1050,80],[1057,100],[1057,150],[1029,150],[1029,207],[987,207],[937,207],[917,207],[917,237],
+  [917,266],[1029,266],[1036,330],[1036,408],[974,408],[916,408],[859,408],[800,408],[798,330],[793,266],[793,207],[790,143]];
+var STOP_AT = { "214": 7, "217": 9, "221": 10, "229": 16, "230": 18, "232": 19, "241": 22, "247": 28, "254": 33 };
+
+var CUM = [0];
+for (var r = 1; r < ROUTE.length; r++) {
+  var dx = ROUTE[r][0] - ROUTE[r - 1][0], dy = ROUTE[r][1] - ROUTE[r - 1][1];
+  CUM.push(CUM[r - 1] + Math.sqrt(dx * dx + dy * dy));
+}
+var TOTAL = CUM[CUM.length - 1];
+function pointAt(len) {
+  len = Math.max(0, Math.min(TOTAL, len));
+  for (var k = 1; k < CUM.length; k++) {
+    if (CUM[k] >= len) {
+      var t = (len - CUM[k - 1]) / ((CUM[k] - CUM[k - 1]) || 1);
+      return [ROUTE[k - 1][0] + (ROUTE[k][0] - ROUTE[k - 1][0]) * t, ROUTE[k - 1][1] + (ROUTE[k][1] - ROUTE[k - 1][1]) * t];
+    }
+  }
+  return ROUTE[ROUTE.length - 1];
+}
+
+var NS = "http://www.w3.org/2000/svg";
+function svgEl(tag, attrs, parent) {
+  var e = document.createElementNS(NS, tag);
+  for (var a in attrs) e.setAttribute(a, attrs[a]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+var stopHalls = {};
+halls.forEach(function (h, k) { stopHalls[h.hall] = k; });
+
+function buildPlan(container) {
+  var svg = svgEl("svg", { viewBox: "636 4 440 466", class: "plan", role: "img", "aria-label": "План второго этажа Эрмитажа с маршрутом" }, container);
+  /* здания */
+  svgEl("path", { class: "bldg", d: "M668,30 H752 V405 H750 V453 H672 V405 H668 Z" }, svg);
+  svgEl("rect", { class: "bldg", x: 768, y: 30, width: 297, height: 60 }, svg);
+  svgEl("rect", { class: "bldg", x: 768, y: 90, width: 297, height: 343 }, svg);
+  var t;
+  t = svgEl("text", { class: "bl", x: 916, y: 18 }, svg); t.textContent = "БОЛЬШОЙ (СТАРЫЙ) ЭРМИТАЖ";
+  t = svgEl("text", { class: "bl", x: 916, y: 448 }, svg); t.textContent = "НОВЫЙ ЭРМИТАЖ";
+  t = svgEl("text", { class: "bl", x: 711, y: 464 }, svg); t.textContent = "МАЛЫЙ ЭРМИТАЖ";
+  t = svgEl("text", { class: "bl", x: 711, y: 18 }, svg); t.textContent = "↑ НЕВА";
+  t = svgEl("text", { class: "ent", x: 652, y: 330, transform: "rotate(-90 652 330)" }, svg); t.textContent = "ИЗ ЗИМНЕГО ДВОРЦА →";
+  t = svgEl("text", { class: "yl", x: 712, y: 250, transform: "rotate(-90 712 250)" }, svg); t.textContent = "ВИСЯЧИЙ САД";
+  /* залы */
+  var stops = {}, labels = {};
+  ROOMS.forEach(function (rm) {
+    var id = rm[0], kind = rm[5] || (stopHalls[id] !== undefined ? "stop" : "room");
+    var rect = svgEl("rect", { class: kind, x: rm[1], y: rm[2], width: rm[3], height: rm[4], rx: 1.5 }, svg);
+    if (!id) return;
+    var lab = svgEl("text", { x: rm[1] + rm[3] / 2, y: rm[2] + rm[4] / 2, class: kind === "stop" ? "sn" : "" }, svg);
+    lab.textContent = id;
+    if (kind === "stop") {
+      stops[id] = rect; labels[id] = lab;
+      rect.addEventListener("click", function () {
+        closePlan();
+        document.getElementById("w" + (halls[stopHalls[id]].items[0] + 1)).scrollIntoView({ behavior: "smooth" });
+      });
+    }
+  });
+  /* маршрут */
+  var pts = ROUTE.map(function (p) { return p.join(","); }).join(" ");
+  svgEl("polyline", { class: "rbase", points: pts }, svg);
+  var prog = svgEl("polyline", { class: "rprog", points: pts, "stroke-dasharray": TOTAL + " " + TOTAL, "stroke-dashoffset": TOTAL }, svg);
+  var halo = svgEl("circle", { class: "halo", r: 4, cx: ROUTE[0][0], cy: ROUTE[0][1] }, svg);
+  var dot = svgEl("circle", { class: "dot", r: 4, cx: ROUTE[0][0], cy: ROUTE[0][1] }, svg);
+  /* подсказка с картинами в текущем зале */
+  var tip = svgEl("g", { class: "tip", opacity: 0 }, svg);
+  var tipRect = svgEl("rect", { rx: 7, height: 17 }, tip);
+  var tipText = svgEl("text", { y: 8.5 }, tip);
+  var cap = document.createElement("div");
+  cap.className = "nowcap";
+  container.appendChild(cap);
+  return { prog: prog, dot: dot, halo: halo, stops: stops, labels: labels, tip: tip, tipRect: tipRect, tipText: tipText, cap: cap, lastHall: undefined };
+}
+var plans = [buildPlan(document.getElementById("planMain")), buildPlan(document.getElementById("planPop"))];
+
+function updatePlans(len, hallIdx) {
+  var p = pointAt(len);
+  plans.forEach(function (pl) {
+    pl.prog.setAttribute("stroke-dashoffset", (TOTAL - len).toFixed(1));
+    pl.dot.setAttribute("cx", p[0].toFixed(1)); pl.dot.setAttribute("cy", p[1].toFixed(1));
+    pl.halo.setAttribute("cx", p[0].toFixed(1)); pl.halo.setAttribute("cy", p[1].toFixed(1));
+    if (pl.lastHall === hallIdx) return;
+    pl.lastHall = hallIdx;
+    halls.forEach(function (h, k) {
+      pl.stops[h.hall].classList.toggle("done", k < hallIdx);
+      pl.stops[h.hall].classList.toggle("on", k === hallIdx);
+      pl.labels[h.hall].classList.toggle("on", k === hallIdx);
+    });
+    if (hallIdx < 0) {
+      pl.tip.setAttribute("opacity", 0);
+      pl.cap.innerHTML = "<b>Старт</b><span>Иорданская лестница → парадные залы → Малый Эрмитаж</span>";
+      return;
+    }
+    var h = halls[hallIdx], names = h.items.map(function (i) { return WORKS[i].short; }).join(" · ");
+    pl.cap.innerHTML = "<b>Зал " + h.hall + "</b><span>" + esc(names) + "</span>";
+    pl.tipText.textContent = names;
+    var w = 12, r = pl.stops[h.hall];
+    try { w = pl.tipText.getComputedTextLength() + 14; } catch (e) { w = 0; }
+    if (w < 20) w = names.length * 4.3 + 14;
+    var rx = +r.getAttribute("x"), ry = +r.getAttribute("y"), rw = +r.getAttribute("width"), rh = +r.getAttribute("height");
+    var tx = Math.max(640, Math.min(1072 - w, rx + rw / 2 - w / 2));
+    var ty = ry < 120 ? ry + rh + 6 : ry - 23;
+    pl.tipRect.setAttribute("width", w.toFixed(1));
+    pl.tipText.setAttribute("x", 7);
+    pl.tip.setAttribute("transform", "translate(" + tx.toFixed(1) + "," + ty + ")");
+    pl.tip.setAttribute("opacity", 1);
+  });
+}
+
+var planlb = document.getElementById("planlb");
+function closePlan() { planlb.classList.remove("open"); planlb.setAttribute("aria-hidden", "true"); document.body.style.overflow = ""; }
+planBtn.addEventListener("click", function () {
+  planlb.classList.add("open"); planlb.setAttribute("aria-hidden", "false"); document.body.style.overflow = "hidden";
+  plans[1].lastHall = undefined; updatePlans(shownLen, curHallIdx);
+});
+document.getElementById("planClose").addEventListener("click", closePlan);
+planlb.addEventListener("click", function (e) { if (e.target === planlb) closePlan(); });
+
+/* ---------- build: work cards ---------- */
+var main = document.getElementById("works");
+WORKS.forEach(function (w, i) {
+  var n = i + 1, last = i === WORKS.length - 1;
+  var art = document.createElement("article");
+  art.className = "wrap work";
+  art.id = "w" + n;
+  art.dataset.hall = w.hall;
+  art.innerHTML =
+    '<span class="kicker lg reveal">' + pad(n) + ' · Зал ' + w.hall + (last ? ' · Финал' : '') + '</span>' +
+    '<div class="frame develop" data-full="' + esc(w.local || imgUrl(w.img, 2400)) + '" data-fallback="' + esc(imgUrl(w.img, 2400)) + '"><img loading="lazy" src="' + esc(w.local || imgUrl(w.img, 1400)) + '" data-fallback="' + esc(imgUrl(w.img, 1400)) + '" alt="' + esc(w.author + '. ' + w.title) + '">' +
+    '<span class="zoomhint glassbox"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5M11 8v6M8 11h6"/></svg>Рассмотреть</span></div>' +
+    (w.credit ? '<div class="credit">' + esc(w.credit) + '</div>' : '') +
+    '<h2 class="h2 reveal">' + esc(w.title) + '</h2>' +
+    '<div class="meta reveal"><div class="lg"><b>Автор</b><span>' + esc(w.author) + '</span></div><div class="lg"><b>Год</b><span>' + esc(w.year) + '</span></div><div class="lg"><b>Зал</b><span>' + w.hall + '</span></div></div>' +
+    '<div class="tech reveal">' + esc(w.tech) + '</div>' +
+    '<p class="text reveal">' + esc(w.text) + '</p>' +
+    '<div class="player lg reveal" data-src="audio/' + pad(n) + '" data-n="' + pad(n) + '"></div>' +
+    (last ? '' : '<a class="nextlink reveal" href="#w' + (n + 1) + '">Далее: ' + esc(WORKS[i + 1].short) + ' ↓</a>');
+  main.appendChild(art);
+});
+
+/* если своей картинки (images/NN.jpg) ещё нет — берём из Wikimedia */
+document.querySelectorAll("img[data-fallback]").forEach(function (im) {
+  im.addEventListener("error", function () {
+    if (im.src.indexOf(im.dataset.fallback) === -1) {
+      im.src = im.dataset.fallback;
+      var f = im.closest(".frame"); if (f) f.dataset.full = f.dataset.fallback;
+    }
+  });
+});
+
+/* ---------- audio players ---------- */
+(function () {
+  var ICON_PLAY = '<svg class="ico-play" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg>';
+  var ICON_PAUSE = '<svg class="ico-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4.5v16H6zM13.5 4H18v16h-4.5z"/></svg>';
+  var RATES = [1, 1.5, 2];
+  var rate = 1;
+  try { rate = parseFloat(localStorage.getItem("rate")) || 1; } catch (e) {}
+  var players = [];
+  function fmt(s) { if (!isFinite(s) || s < 0) return "—:—"; var m = Math.floor(s / 60), r = Math.floor(s % 60); return m + ":" + (r < 10 ? "0" : "") + r; }
+  function setRate(r) {
+    rate = r;
+    try { localStorage.setItem("rate", r); } catch (e) {}
+    players.forEach(function (p) {
+      p.audio.playbackRate = r;
+      p.el.querySelectorAll(".speeds button").forEach(function (b) { b.classList.toggle("on", parseFloat(b.dataset.rate) === r); });
+    });
+  }
+  document.querySelectorAll(".player").forEach(function (el) {
+    el.innerHTML =
+      '<button class="play" aria-label="Слушать">' + ICON_PLAY + ICON_PAUSE + '</button>' +
+      '<div class="pmid"><div class="ptop"><span class="ptitle">Аудио' + el.dataset.n + '</span>' +
+      '<span class="ptime"><span class="cur">0:00</span> / <span class="dur">—:—</span></span></div>' +
+      '<div class="bar"><div class="fill"></div><div class="knob"></div></div></div>' +
+      '<div class="speeds">' + RATES.map(function (r) { return '<button data-rate="' + r + '">×' + r + '</button>'; }).join("") + '</div>';
+    var audio = new Audio();
+    audio.preload = "metadata";
+    /* подходит и m4a (диктофон iPhone), и mp3: пробуем по очереди */
+    var EXTS = [".m4a", ".mp3"], extIdx = 0;
+    audio.src = el.dataset.src + EXTS[0];
+    var p = { el: el, audio: audio };
+    players.push(p);
+    var fill = el.querySelector(".fill"), knob = el.querySelector(".knob"), cur = el.querySelector(".cur"), dur = el.querySelector(".dur"), bar = el.querySelector(".bar");
+    function update() {
+      var d = audio.duration, t = audio.currentTime, pct = d ? (t / d) * 100 : 0;
+      fill.style.width = pct + "%"; knob.style.left = pct + "%";
+      cur.textContent = fmt(t); dur.textContent = fmt(d);
+    }
+    audio.addEventListener("loadedmetadata", update);
+    audio.addEventListener("timeupdate", update);
+    audio.addEventListener("play", function () {
+      audio.playbackRate = rate;
+      players.forEach(function (o) { if (o !== p) o.audio.pause(); });
+      el.classList.add("playing");
+    });
+    audio.addEventListener("pause", function () { el.classList.remove("playing"); });
+    audio.addEventListener("ended", function () { el.classList.remove("playing"); });
+    audio.addEventListener("error", function () {
+      extIdx++;
+      if (extIdx < EXTS.length) { audio.src = el.dataset.src + EXTS[extIdx]; audio.load(); }
+      else el.classList.add("missing");
+    });
+    el.querySelector(".play").addEventListener("click", function () {
+      if (el.classList.contains("missing")) return;
+      if (audio.paused) { audio.playbackRate = rate; audio.play(); } else { audio.pause(); }
+    });
+    var dragging = false;
+    function seek(ev) {
+      if (!audio.duration) return;
+      var rect = bar.getBoundingClientRect();
+      audio.currentTime = Math.max(0, Math.min(1, (ev.clientX - rect.left) / rect.width)) * audio.duration;
+      update();
+    }
+    bar.addEventListener("pointerdown", function (e) { dragging = true; seek(e); });
+    window.addEventListener("pointermove", function (e) { if (dragging) seek(e); });
+    window.addEventListener("pointerup", function () { dragging = false; });
+    el.querySelectorAll(".speeds button").forEach(function (b) { b.addEventListener("click", function () { setRate(parseFloat(b.dataset.rate)); }); });
+  });
+  setRate(rate);
+})();
+
+/* ---------- scroll reveal + «проявление» картин ---------- */
+var io = new IntersectionObserver(function (entries) {
+  entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+}, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
+document.querySelectorAll(".reveal, .develop").forEach(function (el) { io.observe(el); });
+
+/* ---------- scroll: прогресс, живая схема, параллакс ---------- */
+var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+var routebar = document.getElementById("routebar"), progress = document.getElementById("progress");
+var hero = document.getElementById("top"), scheme = document.getElementById("route");
+var arts = Array.prototype.slice.call(document.querySelectorAll(".work"));
+var frames = Array.prototype.slice.call(document.querySelectorAll(".frame"));
+var chipEls = Array.prototype.slice.call(chips.querySelectorAll("a"));
+var legendItems = Array.prototype.slice.call(legend.querySelectorAll("li[data-hall]"));
+var lastHall = null, ticking = false;
+var targetLen = 0, shownLen = 0, curHallIdx = -1, animating = false;
+
+function docTop(el) { return el.getBoundingClientRect().top + window.scrollY; }
+function stopLen(i) { return CUM[STOP_AT[WORKS[i].hall]]; }
+
+/* плавно «дотягиваем» линию до нужной точки */
+function animateLine() {
+  var d = targetLen - shownLen;
+  if (Math.abs(d) < 0.4 || reduce) { shownLen = targetLen; animating = false; }
+  else { shownLen += d * 0.14; }
+  updatePlans(shownLen, curHallIdx);
+  if (animating) requestAnimationFrame(animateLine);
+}
+
+function onScroll() {
+  ticking = false;
+  var y = window.scrollY, vh = window.innerHeight, probe = y + vh * 0.5;
+  routebar.classList.toggle("show", y > hero.offsetHeight - 80);
+
+  var tops = arts.map(docTop);
+  var first = tops[0], last = tops[tops.length - 1] + arts[arts.length - 1].offsetHeight - vh * 0.5;
+  progress.style.width = (Math.max(0, Math.min(1, (probe - first) / (last - first))) * 100) + "%";
+
+  var active = -1;
+  tops.forEach(function (t, i) { if (t < probe) active = i; });
+
+  /* сколько линии нарисовать */
+  if (active < 0) {
+    var s = docTop(scheme), f0 = Math.max(0, Math.min(1, (probe - s) / (first - s)));
+    targetLen = f0 * stopLen(0);
+  } else if (active === arts.length - 1) {
+    targetLen = stopLen(active);
+  } else {
+    var f = Math.max(0, Math.min(1, (probe - tops[active]) / (tops[active + 1] - tops[active])));
+    f = Math.max(0, (f - 0.55) / 0.45); /* стоим в зале, пока читаем, и идём дальше ближе к концу карточки */
+    targetLen = stopLen(active) + f * (stopLen(active + 1) - stopLen(active));
+  }
+
+  var hall = active >= 0 ? arts[active].dataset.hall : null;
+  curHallIdx = hall ? stopHalls[hall] : -1;
+  chipEls.forEach(function (c, k) {
+    c.classList.toggle("done", k < curHallIdx);
+    c.classList.toggle("on", k === curHallIdx);
+  });
+  legendItems.forEach(function (li, k) {
+    li.classList.toggle("done", k < curHallIdx);
+    li.classList.toggle("on", k === curHallIdx);
+  });
+  if (hall !== lastHall && curHallIdx >= 0) {
+    var chip = chipEls[curHallIdx];
+    chips.scrollTo({ left: chip.offsetLeft - chips.clientWidth / 2 + chip.clientWidth / 2, behavior: "smooth" });
+  }
+  lastHall = hall;
+  if (!animating) { animating = true; requestAnimationFrame(animateLine); }
+}
+window.addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+window.addEventListener("resize", onScroll);
+onScroll();
+
+/* ---------- lightbox с зумом ---------- */
+(function () {
+  var lb = document.getElementById("lb"), img = document.getElementById("lbImg");
+  var scale = 1, tx = 0, ty = 0, sx, sy, startTx, startTy, moved = false, down = false;
+  function apply() { img.style.transform = "translate(calc(-50% + " + tx + "px), calc(-50% + " + ty + "px)) scale(" + scale + ")"; }
+  function open(src, alt) {
+    img.src = src; img.alt = alt || "";
+    scale = 1; tx = ty = 0; apply();
+    lb.classList.add("open"); lb.classList.remove("zoomed");
+    lb.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  }
+  function close() {
+    lb.classList.remove("open"); lb.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+  }
+  frames.forEach(function (f) {
+    f.addEventListener("click", function () {
+      img.onerror = function () { if (img.src !== f.dataset.fallback) img.src = f.dataset.fallback; };
+      open(f.dataset.full, f.querySelector("img").alt);
+    });
+  });
+  document.getElementById("lbClose").addEventListener("click", close);
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
+  lb.addEventListener("click", function (e) { if (e.target === lb) close(); });
+
+  img.addEventListener("pointerdown", function (e) {
+    down = true; moved = false; sx = e.clientX; sy = e.clientY; startTx = tx; startTy = ty;
+    img.setPointerCapture(e.pointerId);
+  });
+  img.addEventListener("pointermove", function (e) {
+    if (!down) return;
+    var dx = e.clientX - sx, dy = e.clientY - sy;
+    if (Math.abs(dx) + Math.abs(dy) > 6) moved = true;
+    if (scale > 1 && moved) { lb.classList.add("dragging"); tx = startTx + dx; ty = startTy + dy; apply(); }
+  });
+  img.addEventListener("pointerup", function (e) {
+    down = false; lb.classList.remove("dragging");
+    if (moved) return;
+    if (scale === 1) {
+      var r = img.getBoundingClientRect();
+      var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      scale = 2.6;
+      tx = (cx - e.clientX) * (scale - 1);
+      ty = (cy - e.clientY) * (scale - 1);
+      lb.classList.add("zoomed");
+    } else {
+      scale = 1; tx = ty = 0; lb.classList.remove("zoomed");
+    }
+    apply();
+  });
+})();
+</script>
+</body>
+</html>
