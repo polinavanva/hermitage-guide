@@ -120,10 +120,7 @@
   .scheme { padding-top: 40px; padding-bottom: 90px; }
   .scheme .lead { color: var(--muted); font-size: 16px; margin: 14px 0 0; }
   .plancard { margin-top: 30px; }
-  .planscroll { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-  .planscroll::-webkit-scrollbar { display: none; }
   .plan { display: block; width: 100%; height: auto; }
-  .planhint { display: none; font-size: 12px; color: var(--muted); text-align: center; margin-top: 8px; }
   .plan text { font-family: var(--sans); fill: rgba(242,239,231,.42); font-size: 6.5px; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
   .plan .bldg { fill: rgba(255,255,255,.035); stroke: rgba(255,255,255,.5); stroke-width: 1.3; }
   .plan .room { fill: transparent; stroke: rgba(255,255,255,.16); stroke-width: .6; }
@@ -133,34 +130,49 @@
   .plan .stop:hover { fill: rgba(255,255,255,.16); }
   .plan .stop.done { fill: rgba(255,255,255,.2); }
   .plan .stop.on { fill: #fff; stroke: #fff; }
+  .plan .stop.here { fill: rgba(255,255,255,.18); stroke: #fff; stroke-width: 1.4; }
   .plan text.sn { font-family: var(--display); font-weight: 800; font-size: 9px; fill: rgba(242,239,231,.9); transition: fill .5s; }
   .plan text.sn.on { fill: #1d211c; }
   .plan text.bl { font-size: 7px; font-weight: 700; letter-spacing: .14em; fill: rgba(242,239,231,.55); }
   .plan text.yl { font-size: 6px; letter-spacing: .1em; fill: rgba(242,239,231,.28); }
   .plan .rbase { fill: none; stroke: rgba(255,255,255,.28); stroke-width: 1.4; stroke-dasharray: 2 3; stroke-linecap: round; }
+  .plan .rfull { fill: none; stroke: rgba(255,255,255,.85); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .plan .rdone { fill: none; stroke: rgba(255,255,255,.45); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
   .plan .rprog { fill: none; stroke: #fff; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 3px rgba(255,255,255,.55)); }
   .plan .dot { fill: #fff; }
   .plan .halo { fill: none; stroke: #fff; stroke-width: 1.2; transform-box: fill-box; transform-origin: center; animation: halo 1.8s ease-out infinite; }
   @keyframes halo { from { transform: scale(1); opacity: .8; } to { transform: scale(3.2); opacity: 0; } }
-  .plan .tip rect { fill: rgba(28,32,27,.92); stroke: rgba(255,255,255,.45); stroke-width: .7; }
-  .plan .tip text { fill: #fff; font-size: 7.5px; font-weight: 700; text-anchor: start; }
-  .plan .tip { transition: opacity .4s; }
   .plan .ent { font-size: 7px; font-weight: 700; letter-spacing: .1em; fill: rgba(242,239,231,.7); }
-  .nowcap { display: flex; align-items: center; gap: 12px; margin: 14px 6px 4px; font-size: 14px; min-height: 22px; }
-  .nowcap b { font-family: var(--display); font-weight: 800; font-size: 12px; text-transform: uppercase; white-space: nowrap; }
-  .nowcap span { color: var(--muted); }
+  /* номера остановок: в обзоре все белые; в шторке — пройденные, «ты здесь», следующая, впереди */
+  .plan .num { cursor: pointer; }
+  .plan .num circle { fill: #f2efe7; }
+  .plan .num text { font-family: var(--display); font-weight: 800; font-size: 12px; fill: #1d211c; }
+  .plan .num.done circle { fill: rgba(242,239,231,.45); }
+  .plan .num.later circle { fill: #3a4139; stroke: rgba(255,255,255,.45); stroke-width: 1; }
+  .plan .num.later text { fill: #f2efe7; }
+  .plan .num.here circle { fill: var(--bg2); stroke: #fff; stroke-width: 2; }
+  .plan .num.here text { fill: #fff; }
   .legend { list-style: none; margin: 22px 0 0; padding: 0; display: grid; gap: 8px; }
-  .legend li a { display: grid; grid-template-columns: 92px 1fr; gap: 12px; align-items: baseline; padding: 12px 16px; border-radius: 18px; text-decoration: none; border: 1px solid var(--line); transition: background .4s, border-color .4s, color .4s; }
-  .legend li a b { font-family: var(--display); font-weight: 800; font-size: 13px; text-transform: uppercase; }
+  .legend li a { display: grid; grid-template-columns: 112px 1fr; gap: 12px; align-items: baseline; padding: 12px 16px; border-radius: 18px; text-decoration: none; border: 1px solid var(--line); transition: background .4s, border-color .4s, color .4s; }
+  .legend li a b { font-family: var(--display); font-weight: 800; font-size: 13px; text-transform: uppercase; white-space: nowrap; }
+  .legend li a b i { display: inline-grid; place-items: center; width: 22px; height: 22px; margin-right: 8px; border-radius: 50%; background: #f2efe7; color: #1d211c; font-style: normal; font-size: 11px; vertical-align: 1px; }
   .legend li a span { font-size: 15px; }
-  .legend li.done a { border-color: rgba(255,255,255,.3); }
-  .legend li.on a { background: #fff; color: #1d211c; border-color: #fff; }
-  .legend .start a { grid-template-columns: 92px 1fr; color: var(--muted); }
+  .legend .start a { color: var(--muted); }
+  /* «как пройти» в конце карточки, когда следующая картина в другом зале */
+  .howto { margin-top: 34px; padding-top: 24px; border-top: 1px solid var(--line); }
+  .howto-map { margin-top: 12px; max-width: 380px; border-radius: 18px; overflow: hidden; background: var(--deep); }
+  .howto-text { margin: 12px 0 0; font-size: 15px; line-height: 1.5; color: var(--muted); max-width: 380px; }
   .chips button.planbtn { flex: 0 0 auto; padding: 7px 13px; border-radius: 999px; border: 1px solid rgba(255,255,255,.5); background: transparent; font-size: 12px; font-weight: 700; color: #fff; cursor: pointer; }
-  .planlb { position: fixed; inset: 0; z-index: 90; background: rgba(20,24,20,.82); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); display: none; flex-direction: column; justify-content: center; padding: 70px 14px 24px; }
+  /* шторка с планом: «ты здесь» и «дальше» по карточке, которая сейчас на экране */
+  .planlb { position: fixed; inset: 0; z-index: 90; background: rgba(20,24,20,.6); display: none; flex-direction: column; justify-content: flex-end; }
   .planlb.open { display: flex; animation: fade .3s forwards; opacity: 0; }
-  .planlb .close { position: absolute; top: 16px; right: 16px; }
-  .planlb .plancard { margin: 0 auto; width: 100%; max-width: 760px; }
+  .sheet { position: relative; width: 100%; max-width: 760px; margin: 0 auto; max-height: 94svh; overflow-y: auto; background: var(--bg2); border: 1px solid var(--line); border-bottom: 0; border-radius: 24px 24px 0 0; padding: 10px 18px calc(20px + env(safe-area-inset-bottom)); animation: sheetUp .4s var(--ease); }
+  @keyframes sheetUp { from { transform: translateY(40%); } to { transform: none; } }
+  .sheet .grab { width: 40px; height: 4px; border-radius: 2px; background: rgba(255,255,255,.3); margin: 0 auto 14px; }
+  .sheetclose { position: absolute; top: 12px; right: 12px; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line); background: transparent; color: var(--ink); font-size: 14px; cursor: pointer; }
+  .sheethead { padding-right: 46px; }
+  .sheethead b { display: block; margin-top: 4px; font-size: 17px; line-height: 1.3; }
+  .sheet .plancard { margin-top: 14px; }
 
   /* work cards */
   .work { padding-top: 80px; padding-bottom: 80px; border-top: 1px solid var(--line); }
@@ -261,19 +273,18 @@
     .speeds { grid-column: 1 / -1; justify-content: flex-start; }
     .speeds button { padding: 7px 14px; font-size: 13px; }
 
-    /* схема: крупнее, листается вбок */
+    /* схема: целиком в ширину экрана, без прокрутки вбок */
     .scheme { padding-top: 30px; padding-bottom: 60px; }
-    .plan { width: 660px; max-width: none; }
-    .planhint { display: block; }
-    .legend li a { grid-template-columns: 76px 1fr; padding: 11px 14px; }
+    .legend li a { grid-template-columns: 104px 1fr; padding: 11px 14px; }
     .legend li a b { font-size: 12px; }
     .legend li a span { font-size: 14px; }
-    .nowcap { margin: 12px 2px 2px; font-size: 13px; }
-    .planlb { padding: 64px 0 20px; }
+    .sheet { padding-left: 14px; padding-right: 14px; }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
     .reveal, .develop img, .hero h1 .line span, .by, .features, .hero-bottom { opacity: 1 !important; transform: none !important; filter: none !important; }
+    /* без анимации появления окна иначе остаются прозрачными */
+    .lb.open, .planlb.open { opacity: 1 !important; }
   }
 </style>
 </head>
@@ -321,14 +332,18 @@
 <section class="wrap scheme" id="route">
   <span class="kicker lg reveal">Схема</span>
   <h2 class="h2 reveal">План второго этажа</h2>
-  <p class="lead reveal">Линия маршрута прорисовывается, пока ты листаешь. Подсвеченный зал — тот, где ты сейчас. Нажми на зал, чтобы перейти к его картинам.</p>
+  <p class="lead reveal">Цифры — порядок остановок. Нажми на зал, чтобы перейти к его картинам. В пути под каждой картиной будет подсказка, куда идти дальше, а кнопка «План ◎» в верхней панели покажет, где ты сейчас.</p>
   <div class="plancard lg reveal" id="planMain"></div>
   <ol class="legend reveal" id="legend"></ol>
 </section>
 
 <div class="planlb" id="planlb" aria-hidden="true">
-  <button class="pill white close" id="planClose">Закрыть ✕</button>
-  <div class="plancard lg" id="planPop"></div>
+  <div class="sheet" role="dialog" aria-label="План маршрута">
+    <div class="grab"></div>
+    <button class="sheetclose" id="planClose" aria-label="Закрыть">✕</button>
+    <div class="sheethead" id="planHead"></div>
+    <div class="plancard" id="planPop"></div>
+  </div>
 </div>
 
 <main id="works"></main>
@@ -518,7 +533,7 @@ legend.appendChild(startLegend);
 halls.forEach(function (h, k) {
   var li = document.createElement("li");
   li.dataset.hall = h.hall;
-  li.innerHTML = '<a href="#w' + (h.items[0] + 1) + '"><b>Зал ' + h.hall + '</b><span>' +
+  li.innerHTML = '<a href="#w' + (h.items[0] + 1) + '"><b><i>' + (k + 1) + '</i>Зал ' + h.hall + '</b><span>' +
     h.items.map(function (i) { return esc(WORKS[i].short); }).join(' · ') + (k === halls.length - 1 ? ' · финал' : '') + '</span></a>';
   legend.appendChild(li);
   var c = document.createElement("a");
@@ -553,23 +568,18 @@ var ROUTE = [[640,268],[679,268],[679,163],[679,75],[713,58],[760,45],[787,45],[
   [996,72],[1020,72],[1050,80],[1057,100],[1057,150],[1029,150],[1029,207],[987,207],[937,207],[917,207],[917,237],
   [917,266],[1029,266],[1036,330],[1036,408],[974,408],[916,408],[859,408],[800,408],[798,330],[793,266],[793,207],[790,143]];
 var STOP_AT = { "214": 7, "217": 9, "221": 10, "229": 16, "230": 18, "232": 19, "241": 22, "247": 28, "254": 33 };
-
-var CUM = [0];
-for (var r = 1; r < ROUTE.length; r++) {
-  var dx = ROUTE[r][0] - ROUTE[r - 1][0], dy = ROUTE[r][1] - ROUTE[r - 1][1];
-  CUM.push(CUM[r - 1] + Math.sqrt(dx * dx + dy * dy));
-}
-var TOTAL = CUM[CUM.length - 1];
-function pointAt(len) {
-  len = Math.max(0, Math.min(TOTAL, len));
-  for (var k = 1; k < CUM.length; k++) {
-    if (CUM[k] >= len) {
-      var t = (len - CUM[k - 1]) / ((CUM[k] - CUM[k - 1]) || 1);
-      return [ROUTE[k - 1][0] + (ROUTE[k][0] - ROUTE[k - 1][0]) * t, ROUTE[k - 1][1] + (ROUTE[k][1] - ROUTE[k - 1][1]) * t];
-    }
-  }
-  return ROUTE[ROUTE.length - 1];
-}
+/* как дойти до зала: одна строка-подсказка, показывается в карточке под схемой перехода.
+   Пусто — только схема */
+var WAYS = {
+  "217": "",
+  "221": "",
+  "229": "",
+  "230": "",
+  "232": "",
+  "241": "",
+  "247": "",
+  "254": ""
+};
 
 var NS = "http://www.w3.org/2000/svg";
 function svgEl(tag, attrs, parent) {
@@ -578,19 +588,21 @@ function svgEl(tag, attrs, parent) {
   if (parent) parent.appendChild(e);
   return e;
 }
-var stopHalls = {};
+var stopHalls = {}, ROOM = {};
 halls.forEach(function (h, k) { stopHalls[h.hall] = k; });
+ROOMS.forEach(function (rm) { if (rm[0]) ROOM[rm[0]] = rm; });
+function routePts(a, b) { return ROUTE.slice(a, b + 1).map(function (p) { return p.join(","); }).join(" "); }
+function goHall(k) {
+  closePlan();
+  document.getElementById("w" + (halls[k].items[0] + 1)).scrollIntoView({ behavior: "smooth" });
+}
 
-function buildPlan(container) {
-  /* на телефоне план крупнее экрана и листается вбок */
-  var scroller = document.createElement("div");
-  scroller.className = "planscroll";
-  container.appendChild(scroller);
-  var hint = document.createElement("div");
-  hint.className = "planhint";
-  hint.textContent = "← листай план →";
-  container.appendChild(hint);
-  var svg = svgEl("svg", { viewBox: "636 4 440 466", class: "plan", role: "img", "aria-label": "План второго этажа Эрмитажа с маршрутом" }, scroller);
+/* рисует план в контейнер. st.from / st.to — номера залов маршрута (с нуля): где ты и куда дальше;
+   без них — весь маршрут целиком. st.nums — кружки с номерами остановок, st.view — кадр (viewBox) */
+function drawPlan(container, st) {
+  container.innerHTML = "";
+  var route = st.from !== undefined;
+  var svg = svgEl("svg", { viewBox: st.view || "636 4 440 466", class: "plan", role: "img", "aria-label": st.label || "План второго этажа Эрмитажа с маршрутом" }, container);
   /* здания */
   svgEl("path", { class: "bldg", d: "M668,30 H752 V405 H750 V453 H672 V405 H668 Z" }, svg);
   svgEl("rect", { class: "bldg", x: 768, y: 30, width: 297, height: 60 }, svg);
@@ -602,92 +614,83 @@ function buildPlan(container) {
   t = svgEl("text", { class: "bl", x: 711, y: 18 }, svg); t.textContent = "↑ НЕВА";
   t = svgEl("text", { class: "ent", x: 652, y: 330, transform: "rotate(-90 652 330)" }, svg); t.textContent = "ИЗ ЗИМНЕГО ДВОРЦА →";
   t = svgEl("text", { class: "yl", x: 712, y: 250, transform: "rotate(-90 712 250)" }, svg); t.textContent = "ВИСЯЧИЙ САД";
-  /* залы */
-  var stops = {}, labels = {};
+  function state(k) {
+    if (!route) return "";
+    return k === st.to ? " on" : k === st.from ? " here" : k < st.from ? " done" : " later";
+  }
+  /* залы; номера подписываем позже, поверх линии маршрута */
+  var labels = [];
   ROOMS.forEach(function (rm) {
-    var id = rm[0], kind = rm[5] || (stopHalls[id] !== undefined ? "stop" : "room");
-    var rect = svgEl("rect", { class: kind, x: rm[1], y: rm[2], width: rm[3], height: rm[4], rx: 1.5 }, svg);
+    var id = rm[0], k = stopHalls[id], kind = rm[5] || (k !== undefined ? "stop" : "room");
+    var rect = svgEl("rect", { class: kind + (kind === "stop" ? state(k).replace(" later", "") : ""), x: rm[1], y: rm[2], width: rm[3], height: rm[4], rx: 1.5 }, svg);
     if (!id) return;
-    var lab = svgEl("text", { x: rm[1] + rm[3] / 2, y: rm[2] + rm[4] / 2, class: kind === "stop" ? "sn" : "" }, svg);
-    lab.textContent = id;
-    if (kind === "stop") {
-      stops[id] = rect; labels[id] = lab;
-      rect.addEventListener("click", function () {
-        closePlan();
-        document.getElementById("w" + (halls[stopHalls[id]].items[0] + 1)).scrollIntoView({ behavior: "smooth" });
-      });
-    }
+    if (kind === "stop") rect.addEventListener("click", function () { goHall(k); });
+    if (kind === "stop" && st.nums) return; /* номер зала заменит кружок с номером остановки */
+    labels.push({ id: id, x: rm[1] + rm[3] / 2, y: rm[2] + rm[4] / 2 - (route && k === st.from ? 8 : 0), /* над точкой «ты здесь» */
+      cls: kind === "stop" ? "sn" + (route && k === st.to ? " on" : "") : "" });
   });
-  /* маршрут */
-  var pts = ROUTE.map(function (p) { return p.join(","); }).join(" ");
-  svgEl("polyline", { class: "rbase", points: pts }, svg);
-  var prog = svgEl("polyline", { class: "rprog", points: pts, "stroke-dasharray": TOTAL + " " + TOTAL, "stroke-dashoffset": TOTAL }, svg);
-  var halo = svgEl("circle", { class: "halo", r: 4, cx: ROUTE[0][0], cy: ROUTE[0][1] }, svg);
-  var dot = svgEl("circle", { class: "dot", r: 4, cx: ROUTE[0][0], cy: ROUTE[0][1] }, svg);
-  /* подсказка с картинами в текущем зале */
-  var tip = svgEl("g", { class: "tip", opacity: 0 }, svg);
-  var tipRect = svgEl("rect", { rx: 7, height: 17 }, tip);
-  var tipText = svgEl("text", { y: 8.5 }, tip);
-  var cap = document.createElement("div");
-  cap.className = "nowcap";
-  container.appendChild(cap);
-  return { prog: prog, dot: dot, halo: halo, stops: stops, labels: labels, tip: tip, tipRect: tipRect, tipText: tipText, cap: cap, scroller: scroller, svg: svg, lastHall: undefined };
-}
-var plans = [buildPlan(document.getElementById("planMain")), buildPlan(document.getElementById("planPop"))];
-
-function updatePlans(len, hallIdx) {
-  var p = pointAt(len);
-  plans.forEach(function (pl) {
-    pl.prog.setAttribute("stroke-dashoffset", (TOTAL - len).toFixed(1));
-    pl.dot.setAttribute("cx", p[0].toFixed(1)); pl.dot.setAttribute("cy", p[1].toFixed(1));
-    pl.halo.setAttribute("cx", p[0].toFixed(1)); pl.halo.setAttribute("cy", p[1].toFixed(1));
-    if (pl.lastHall === hallIdx) return;
-    pl.lastHall = hallIdx;
-    halls.forEach(function (h, k) {
-      pl.stops[h.hall].classList.toggle("done", k < hallIdx);
-      pl.stops[h.hall].classList.toggle("on", k === hallIdx);
-      pl.labels[h.hall].classList.toggle("on", k === hallIdx);
-    });
-    /* если план шире экрана — подкручиваем его к текущему залу */
-    var focusX = hallIdx < 0 ? ROUTE[0][0] : (function (r) { return +r.getAttribute("x") + +r.getAttribute("width") / 2; })(pl.stops[halls[hallIdx].hall]);
-    if (pl.scroller.scrollWidth > pl.scroller.clientWidth + 4) {
-      var px = (focusX - 636) / 440 * pl.svg.getBoundingClientRect().width;
-      pl.scroller.scrollTo({ left: Math.max(0, px - pl.scroller.clientWidth / 2), behavior: "smooth" });
-    }
-    if (hallIdx < 0) {
-      pl.tip.setAttribute("opacity", 0);
-      pl.cap.innerHTML = "<b>Старт</b><span>Иорданская лестница → парадные залы → Малый Эрмитаж</span>";
-      return;
-    }
-    var h = halls[hallIdx], names = h.items.map(function (i) { return WORKS[i].short; }).join(" · ");
-    pl.cap.innerHTML = "<b>Зал " + h.hall + "</b><span>" + esc(names) + "</span>";
-    pl.tipText.textContent = names;
-    var w = 12, r = pl.stops[h.hall];
-    try { w = pl.tipText.getComputedTextLength() + 14; } catch (e) { w = 0; }
-    if (w < 20) w = names.length * 4.3 + 14;
-    var rx = +r.getAttribute("x"), ry = +r.getAttribute("y"), rw = +r.getAttribute("width"), rh = +r.getAttribute("height");
-    var tx = Math.max(640, Math.min(1072 - w, rx + rw / 2 - w / 2));
-    var ty = ry < 120 ? ry + rh + 6 : ry - 23;
-    pl.tipRect.setAttribute("width", w.toFixed(1));
-    pl.tipText.setAttribute("x", 7);
-    pl.tip.setAttribute("transform", "translate(" + tx.toFixed(1) + "," + ty + ")");
-    pl.tip.setAttribute("opacity", 1);
+  /* маршрут: целиком или «пройдено / сейчас / впереди» */
+  if (!route) svgEl("polyline", { class: "rfull", points: routePts(0, ROUTE.length - 1) }, svg);
+  else {
+    var a = st.from < 0 ? 0 : STOP_AT[halls[st.from].hall];
+    var b = st.to < halls.length ? STOP_AT[halls[st.to].hall] : a;
+    if (a > 0) svgEl("polyline", { class: "rdone", points: routePts(0, a) }, svg);
+    if (b < ROUTE.length - 1) svgEl("polyline", { class: "rbase", points: routePts(b, ROUTE.length - 1) }, svg);
+    if (b > a) svgEl("polyline", { class: "rprog", points: routePts(a, b) }, svg);
+    svgEl("circle", { class: "halo", r: 4, cx: ROUTE[a][0], cy: ROUTE[a][1] }, svg);
+    svgEl("circle", { class: "dot", r: 4, cx: ROUTE[a][0], cy: ROUTE[a][1] }, svg);
+  }
+  labels.forEach(function (l) { svgEl("text", { x: l.x, y: l.y, class: l.cls }, svg).textContent = l.id; });
+  /* номера остановок */
+  if (st.nums) halls.forEach(function (h, k) {
+    var rm = ROOM[h.hall], cx = rm[1] + rm[3] / 2, cy = rm[2] + rm[4] / 2;
+    var g = svgEl("g", { class: "num" + state(k) }, svg);
+    svgEl("circle", { cx: cx, cy: cy, r: 12 }, g);
+    svgEl("text", { x: cx, y: cy }, g).textContent = k + 1;
+    g.addEventListener("click", function () { goHall(k); });
   });
 }
 
-var planlb = document.getElementById("planlb");
+/* кадр для перехода из зала k в зал k+1: оба зала и путь между ними, не слишком узкий и не слишком плоский,
+   в пределах плана */
+function cropBox(k) {
+  var a = halls[k].hall, b = halls[k + 1].hall, xs = [], ys = [];
+  ROUTE.slice(STOP_AT[a], STOP_AT[b] + 1).forEach(function (p) { xs.push(p[0]); ys.push(p[1]); });
+  [a, b].forEach(function (h) { var r = ROOM[h]; xs.push(r[1], r[1] + r[3]); ys.push(r[2], r[2] + r[4]); });
+  var x0 = Math.min.apply(null, xs) - 16, y0 = Math.min.apply(null, ys) - 16;
+  var w = Math.max.apply(null, xs) + 16 - x0, h = Math.max.apply(null, ys) + 16 - y0;
+  if (w < h * 0.8) { x0 -= (h * 0.8 - w) / 2; w = h * 0.8; }
+  else if (w > h * 1.8) { y0 -= (w / 1.8 - h) / 2; h = w / 1.8; }
+  x0 = Math.max(636, Math.min(x0, 1076 - w));
+  y0 = Math.max(4, Math.min(y0, 470 - h));
+  return [x0, y0, w, h].map(Math.round).join(" ");
+}
+
+/* обзор маршрута вверху — статичный */
+drawPlan(document.getElementById("planMain"), { nums: true });
+
+/* шторка «План ◎» */
+var planlb = document.getElementById("planlb"), planHead = document.getElementById("planHead");
 function closePlan() { planlb.classList.remove("open"); planlb.setAttribute("aria-hidden", "true"); document.body.style.overflow = ""; }
-planBtn.addEventListener("click", function () {
+function openPlan() {
+  var k = curHallIdx, next = halls[k + 1];
+  function names(h) { return h.items.map(function (i) { return esc(WORKS[i].short); }).join(" · "); }
+  planHead.innerHTML = (k < 0 ? '<span class="kicker">Старт · Иорданская лестница</span>'
+      : '<span class="kicker">Ты здесь · зал ' + halls[k].hall + (next ? '' : ' · финал') + '</span>') +
+    '<b>' + (next ? 'Дальше: зал ' + next.hall + ' · ' + names(next) : 'Последний зал маршрута: ' + names(halls[k])) + '</b>';
+  drawPlan(document.getElementById("planPop"), { from: k, to: k + 1, nums: true });
   planlb.classList.add("open"); planlb.setAttribute("aria-hidden", "false"); document.body.style.overflow = "hidden";
-  plans[1].lastHall = undefined; updatePlans(shownLen, curHallIdx);
-});
+}
+planBtn.addEventListener("click", openPlan);
 document.getElementById("planClose").addEventListener("click", closePlan);
 planlb.addEventListener("click", function (e) { if (e.target === planlb) closePlan(); });
+document.addEventListener("keydown", function (e) { if (e.key === "Escape" && planlb.classList.contains("open")) closePlan(); });
 
 /* ---------- build: work cards ---------- */
 var main = document.getElementById("works");
 WORKS.forEach(function (w, i) {
   var n = i + 1, last = i === WORKS.length - 1;
+  var nextHall = last ? null : WORKS[i + 1].hall, move = nextHall && nextHall !== w.hall;
   var art = document.createElement("article");
   art.className = "wrap work";
   art.id = "w" + n;
@@ -702,8 +705,15 @@ WORKS.forEach(function (w, i) {
     '<div class="tech reveal">' + esc(w.tech) + '</div>' +
     '<p class="text reveal">' + esc(w.text) + '</p>' +
     '<div class="player lg reveal" data-src="audio/' + pad(n) + '" data-n="' + pad(n) + '" data-title="' + esc(w.short) + '"></div>' +
-    (last ? '' : '<a class="nextlink reveal" href="#w' + (n + 1) + '">Далее: ' + esc(WORKS[i + 1].short) + ' ↓</a>');
+    (move ? '<div class="howto reveal" data-k="' + stopHalls[w.hall] + '"><span class="kicker">Дальше — зал ' + nextHall + '</span>' +
+      '<div class="howto-map"></div>' + (WAYS[nextHall] ? '<p class="howto-text">' + esc(WAYS[nextHall]) + '</p>' : '') + '</div>' : '') +
+    (last ? '' : '<a class="nextlink reveal" href="#w' + (n + 1) + '">Далее: ' + esc(WORKS[i + 1].short) + (move ? '' : ' · в этом же зале') + ' ↓</a>');
   main.appendChild(art);
+});
+/* схемы переходов между залами */
+document.querySelectorAll(".howto").forEach(function (el) {
+  var k = +el.dataset.k;
+  drawPlan(el.querySelector(".howto-map"), { from: k, to: k + 1, view: cropBox(k), label: "Как пройти из зала " + halls[k].hall + " в зал " + halls[k + 1].hall });
 });
 
 /* если своей картинки (images/NN.jpg) ещё нет — берём из Wikimedia */
@@ -799,28 +809,15 @@ var io = new IntersectionObserver(function (entries) {
 }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
 document.querySelectorAll(".reveal, .develop").forEach(function (el) { io.observe(el); });
 
-/* ---------- scroll: прогресс, живая схема, параллакс ---------- */
-var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+/* ---------- scroll: прогресс и текущий зал ---------- */
 var routebar = document.getElementById("routebar"), progress = document.getElementById("progress");
-var hero = document.getElementById("top"), scheme = document.getElementById("route");
+var hero = document.getElementById("top");
 var arts = Array.prototype.slice.call(document.querySelectorAll(".work"));
 var frames = Array.prototype.slice.call(document.querySelectorAll(".frame"));
 var chipEls = Array.prototype.slice.call(chips.querySelectorAll("a"));
-var legendItems = Array.prototype.slice.call(legend.querySelectorAll("li[data-hall]"));
-var lastHall = null, ticking = false;
-var targetLen = 0, shownLen = 0, curHallIdx = -1, animating = false;
+var lastHall = null, ticking = false, curHallIdx = -1;
 
 function docTop(el) { return el.getBoundingClientRect().top + window.scrollY; }
-function stopLen(i) { return CUM[STOP_AT[WORKS[i].hall]]; }
-
-/* плавно «дотягиваем» линию до нужной точки */
-function animateLine() {
-  var d = targetLen - shownLen;
-  if (Math.abs(d) < 0.4 || reduce) { shownLen = targetLen; animating = false; }
-  else { shownLen += d * 0.14; }
-  updatePlans(shownLen, curHallIdx);
-  if (animating) requestAnimationFrame(animateLine);
-}
 
 function onScroll() {
   ticking = false;
@@ -834,34 +831,17 @@ function onScroll() {
   var active = -1;
   tops.forEach(function (t, i) { if (t < probe) active = i; });
 
-  /* сколько линии нарисовать */
-  if (active < 0) {
-    var s = docTop(scheme), f0 = Math.max(0, Math.min(1, (probe - s) / (first - s)));
-    targetLen = f0 * stopLen(0);
-  } else if (active === arts.length - 1) {
-    targetLen = stopLen(active);
-  } else {
-    var f = Math.max(0, Math.min(1, (probe - tops[active]) / (tops[active + 1] - tops[active])));
-    f = Math.max(0, (f - 0.55) / 0.45); /* стоим в зале, пока читаем, и идём дальше ближе к концу карточки */
-    targetLen = stopLen(active) + f * (stopLen(active + 1) - stopLen(active));
-  }
-
   var hall = active >= 0 ? arts[active].dataset.hall : null;
   curHallIdx = hall ? stopHalls[hall] : -1;
   chipEls.forEach(function (c, k) {
     c.classList.toggle("done", k < curHallIdx);
     c.classList.toggle("on", k === curHallIdx);
   });
-  legendItems.forEach(function (li, k) {
-    li.classList.toggle("done", k < curHallIdx);
-    li.classList.toggle("on", k === curHallIdx);
-  });
   if (hall !== lastHall && curHallIdx >= 0) {
     var chip = chipEls[curHallIdx];
     chips.scrollTo({ left: chip.offsetLeft - chips.clientWidth / 2 + chip.clientWidth / 2, behavior: "smooth" });
   }
   lastHall = hall;
-  if (!animating) { animating = true; requestAnimationFrame(animateLine); }
 }
 window.addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
 window.addEventListener("resize", onScroll);
