@@ -118,7 +118,6 @@
 
   /* scheme */
   .scheme { padding-top: 40px; padding-bottom: 90px; }
-  .scheme .lead { color: var(--muted); font-size: 16px; margin: 14px 0 0; }
   .plancard { margin-top: 30px; }
   .plan { display: block; width: 100%; height: auto; }
   .plan text { font-family: var(--sans); fill: rgba(242,239,231,.42); font-size: 6.5px; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
@@ -161,7 +160,6 @@
   /* «как пройти» в конце карточки, когда следующая картина в другом зале */
   .howto { margin-top: 34px; padding-top: 24px; border-top: 1px solid var(--line); }
   .howto-map { margin-top: 12px; max-width: 380px; border-radius: 18px; overflow: hidden; background: var(--deep); }
-  .howto-text { margin: 12px 0 0; font-size: 15px; line-height: 1.5; color: var(--muted); max-width: 380px; }
   /* кнопка плана: в правом нижнем углу, появляется вместе с верхней панелью */
   .planfab { position: fixed; z-index: 40; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); box-shadow: 0 8px 28px rgba(0,0,0,.4); opacity: 0; transform: translateY(14px); pointer-events: none; transition: opacity .35s, transform .35s var(--ease); }
   .planfab.show { opacity: 1; transform: none; pointer-events: auto; }
@@ -178,7 +176,7 @@
   .sheet .plancard { margin-top: 14px; }
 
   /* work cards */
-  .work { padding-top: 80px; padding-bottom: 80px; border-top: 1px solid var(--line); }
+  .work { padding-top: 80px; padding-bottom: 40px; border-top: 1px solid var(--line); }
   .frame { position: relative; margin-top: 24px; border-radius: 26px; overflow: hidden; background: var(--deep); cursor: zoom-in; }
   .frame img { display: block; width: 100%; height: auto; max-height: 82vh; object-fit: contain; }
   .zoomhint { position: absolute; right: 14px; bottom: 14px; padding: 9px 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; display: flex; align-items: center; gap: 7px; }
@@ -217,7 +215,8 @@
   .player.missing .ptitle::after { content: " · аудио скоро появится"; font-weight: 500; color: var(--muted); }
 
   /* footer */
-  footer { padding: 90px 0 60px; border-top: 1px solid var(--line); text-align: center; }
+  footer { border-top: 1px solid var(--line); text-align: center; }
+  footer.wrap { padding-top: 90px; padding-bottom: 96px; } /* снизу — место под кнопку «План» */
   footer .h2 { font-size: clamp(30px, 8vw, 70px); margin: 20px 0 28px; }
   .credits { margin-top: 50px; font-size: 12px; color: var(--muted); line-height: 1.7; }
 
@@ -258,12 +257,13 @@
     .strip .t { font-size: 15px; }
 
     /* заголовки и текст */
-    .h2 { font-size: 26px; line-height: 1.08; letter-spacing: -.015em; hyphens: auto; -webkit-hyphens: auto; }
+    .h2 { font-size: 26px; line-height: 1.08; letter-spacing: -.015em; }
     .work .h2 { font-size: 22px; }
     footer .h2 { font-size: 30px; }
     .intro { padding-top: 64px; padding-bottom: 50px; }
     .intro p { font-size: 17px; }
-    .work { padding-top: 56px; padding-bottom: 56px; }
+    .work { padding-top: 56px; padding-bottom: 32px; }
+    footer.wrap { padding-top: 56px; }
     .work .text { font-size: 17px; }
     .frame { border-radius: 18px; margin-top: 18px; }
     .zoomhint { right: 10px; bottom: 10px; padding: 7px 11px; font-size: 11px; }
@@ -337,7 +337,6 @@
 <section class="wrap scheme" id="route">
   <span class="kicker lg reveal">Схема</span>
   <h2 class="h2 reveal">План второго этажа</h2>
-  <p class="lead reveal">Цифры — порядок остановок. Нажми на зал, чтобы перейти к его картинам. В пути под каждой картиной будет подсказка, куда идти дальше, а кнопка «План» в правом нижнем углу покажет, где ты сейчас.</p>
   <div class="plancard lg reveal" id="planMain"></div>
   <ol class="legend reveal" id="legend"></ol>
 </section>
@@ -573,18 +572,6 @@ var ROUTE = [[640,268],[679,268],[679,163],[679,75],[713,58],[760,45],[787,45],[
   [996,72],[1020,72],[1050,80],[1057,100],[1057,150],[1029,150],[1029,207],[987,207],[937,207],[917,207],[917,237],
   [917,266],[1029,266],[1036,330],[1036,408],[974,408],[916,408],[859,408],[800,408],[798,330],[793,266],[793,207],[790,143]];
 var STOP_AT = { "214": 7, "217": 9, "221": 10, "229": 16, "230": 18, "232": 19, "241": 22, "247": 28, "254": 33 };
-/* как дойти до зала: одна строка-подсказка, показывается в карточке под схемой перехода.
-   Пусто — только схема */
-var WAYS = {
-  "217": "",
-  "221": "",
-  "229": "",
-  "230": "",
-  "232": "",
-  "241": "",
-  "247": "",
-  "254": ""
-};
 
 var NS = "http://www.w3.org/2000/svg";
 function svgEl(tag, attrs, parent) {
@@ -711,7 +698,7 @@ WORKS.forEach(function (w, i) {
     '<p class="text reveal">' + esc(w.text) + '</p>' +
     '<div class="player lg reveal" data-src="audio/' + pad(n) + '" data-n="' + pad(n) + '" data-title="' + esc(w.short) + '"></div>' +
     (move ? '<div class="howto reveal" data-k="' + stopHalls[w.hall] + '"><span class="kicker">Дальше — зал ' + nextHall + '</span>' +
-      '<div class="howto-map"></div>' + (WAYS[nextHall] ? '<p class="howto-text">' + esc(WAYS[nextHall]) + '</p>' : '') + '</div>' : '') +
+      '<div class="howto-map"></div></div>' : '') +
     (last ? '' : '<a class="nextlink reveal" href="#w' + (n + 1) + '">Далее: ' + esc(WORKS[i + 1].short) + (move ? '' : ' · в этом же зале') + ' ↓</a>');
   main.appendChild(art);
 });
