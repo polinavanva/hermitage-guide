@@ -162,7 +162,10 @@
   .howto { margin-top: 34px; padding-top: 24px; border-top: 1px solid var(--line); }
   .howto-map { margin-top: 12px; max-width: 380px; border-radius: 18px; overflow: hidden; background: var(--deep); }
   .howto-text { margin: 12px 0 0; font-size: 15px; line-height: 1.5; color: var(--muted); max-width: 380px; }
-  .chips button.planbtn { flex: 0 0 auto; padding: 7px 13px; border-radius: 999px; border: 1px solid rgba(255,255,255,.5); background: transparent; font-size: 12px; font-weight: 700; color: #fff; cursor: pointer; }
+  /* кнопка плана: в правом нижнем углу, появляется вместе с верхней панелью */
+  .planfab { position: fixed; z-index: 40; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); box-shadow: 0 8px 28px rgba(0,0,0,.4); opacity: 0; transform: translateY(14px); pointer-events: none; transition: opacity .35s, transform .35s var(--ease); }
+  .planfab.show { opacity: 1; transform: none; pointer-events: auto; }
+  .planfab svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; }
   /* шторка с планом: «ты здесь» и «дальше» по карточке, которая сейчас на экране */
   .planlb { position: fixed; inset: 0; z-index: 90; background: rgba(20,24,20,.6); display: none; flex-direction: column; justify-content: flex-end; }
   .planlb.open { display: flex; animation: fade .3s forwards; opacity: 0; }
@@ -290,6 +293,8 @@
 </head>
 <body>
 
+<button class="pill white planfab" id="planFab" aria-label="План маршрута: где ты и куда дальше"><svg viewBox="0 0 24 24"><path d="M3 6.5 9 4l6 2.5L21 4v13.5L15 20l-6-2.5L3 20zM9 4v13.5M15 6.5V20"/></svg>План</button>
+
 <div class="routebar" id="routebar">
   <div class="chips" id="chips"></div>
   <div class="progress"><i id="progress"></i></div>
@@ -332,7 +337,7 @@
 <section class="wrap scheme" id="route">
   <span class="kicker lg reveal">Схема</span>
   <h2 class="h2 reveal">План второго этажа</h2>
-  <p class="lead reveal">Цифры — порядок остановок. Нажми на зал, чтобы перейти к его картинам. В пути под каждой картиной будет подсказка, куда идти дальше, а кнопка «План ◎» в верхней панели покажет, где ты сейчас.</p>
+  <p class="lead reveal">Цифры — порядок остановок. Нажми на зал, чтобы перейти к его картинам. В пути под каждой картиной будет подсказка, куда идти дальше, а кнопка «План» в правом нижнем углу покажет, где ты сейчас.</p>
   <div class="plancard lg reveal" id="planMain"></div>
   <ol class="legend reveal" id="legend"></ol>
 </section>
@@ -436,6 +441,9 @@ function imgUrl(file, w) { return "https://commons.wikimedia.org/wiki/Special:Fi
 /* размеры картинок под экран: на телефоне — легче */
 var MOBILE = window.innerWidth < 760;
 var HERO_W = MOBILE ? 960 : 1280, CARD_W = MOBILE ? 960 : 1400, FULL_W = MOBILE ? 1920 : 2400;
+/* свои копии картин: images/works/NN-{s,m,l,z}.webp — лента, карточка на телефоне, карточка на десктопе,
+   увеличение. Если файла нет — берём с Wikimedia (data-fallback) */
+function workSrc(i, size) { return "images/works/" + pad(i + 1) + "-" + size + ".webp"; }
 function pad(n) { return (n < 10 ? "0" : "") + n; }
 function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
 
@@ -509,7 +517,7 @@ var strip = document.getElementById("strip");
 WORKS.forEach(function (w, i) {
   var a = document.createElement("a");
   a.href = "#w" + (i + 1);
-  a.innerHTML = '<img class="thumb s' + (i % 4) + '" alt="" loading="lazy" src="' + esc(w.local || imgUrl(w.img, 300)) + '" data-fallback="' + esc(imgUrl(w.img, 300)) + '">' +
+  a.innerHTML = '<img class="thumb s' + (i % 4) + '" alt="" loading="lazy" decoding="async" src="' + workSrc(i, "s") + '" data-fallback="' + esc(imgUrl(w.img, 300)) + '">' +
     '<span><span class="t">' + esc(w.short) + '</span><span class="s" style="display:block">' + esc(w.author) + ' · зал ' + w.hall + '</span></span>';
   strip.appendChild(a);
 });
@@ -522,10 +530,7 @@ WORKS.forEach(function (w, i) {
   h.items.push(i);
 });
 var chips = document.getElementById("chips"), legend = document.getElementById("legend");
-var planBtn = document.createElement("button");
-planBtn.className = "planbtn";
-planBtn.textContent = "План ◎";
-chips.appendChild(planBtn);
+var planBtn = document.getElementById("planFab");
 var startLegend = document.createElement("li");
 startLegend.className = "start";
 startLegend.innerHTML = '<a href="#route"><b>Вход</b><span>Иорданская лестница → парадные залы Зимнего дворца → Малый Эрмитаж, часы «Павлин» → Старый Эрмитаж</span></a>';
@@ -669,7 +674,7 @@ function cropBox(k) {
 /* обзор маршрута вверху — статичный */
 drawPlan(document.getElementById("planMain"), { nums: true });
 
-/* шторка «План ◎» */
+/* шторка «План» */
 var planlb = document.getElementById("planlb"), planHead = document.getElementById("planHead");
 function closePlan() { planlb.classList.remove("open"); planlb.setAttribute("aria-hidden", "true"); document.body.style.overflow = ""; }
 function openPlan() {
@@ -697,7 +702,7 @@ WORKS.forEach(function (w, i) {
   art.dataset.hall = w.hall;
   art.innerHTML =
     '<span class="kicker lg reveal">' + pad(n) + ' · Зал ' + w.hall + (last ? ' · Финал' : '') + '</span>' +
-    '<div class="frame develop" data-full="' + esc(w.local || imgUrl(w.img, FULL_W)) + '" data-fallback="' + esc(imgUrl(w.img, FULL_W)) + '"><img loading="lazy" decoding="async" src="' + esc(w.local || imgUrl(w.img, CARD_W)) + '" data-fallback="' + esc(imgUrl(w.img, CARD_W)) + '" alt="' + esc(w.author + '. ' + w.title) + '">' +
+    '<div class="frame develop" data-full="' + workSrc(i, "z") + '" data-fallback="' + esc(imgUrl(w.img, FULL_W)) + '"><img loading="lazy" decoding="async" src="' + workSrc(i, MOBILE ? "m" : "l") + '" data-fallback="' + esc(imgUrl(w.img, CARD_W)) + '" alt="' + esc(w.author + '. ' + w.title) + '">' +
     '<span class="zoomhint glassbox"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5M11 8v6M8 11h6"/></svg>Рассмотреть</span></div>' +
     (w.credit ? '<div class="credit">' + esc(w.credit) + '</div>' : '') +
     '<h2 class="h2 reveal">' + esc(w.title) + '</h2>' +
@@ -716,7 +721,7 @@ document.querySelectorAll(".howto").forEach(function (el) {
   drawPlan(el.querySelector(".howto-map"), { from: k, to: k + 1, view: cropBox(k), label: "Как пройти из зала " + halls[k].hall + " в зал " + halls[k + 1].hall });
 });
 
-/* если своей картинки (images/NN.jpg) ещё нет — берём из Wikimedia */
+/* если своей копии картины нет — берём с Wikimedia */
 document.querySelectorAll("img[data-fallback]").forEach(function (im) {
   im.addEventListener("error", function () {
     if (im.src.indexOf(im.dataset.fallback) === -1) {
@@ -822,7 +827,9 @@ function docTop(el) { return el.getBoundingClientRect().top + window.scrollY; }
 function onScroll() {
   ticking = false;
   var y = window.scrollY, vh = window.innerHeight, probe = y + vh * 0.5;
-  routebar.classList.toggle("show", y > hero.offsetHeight - 80);
+  var past = y > hero.offsetHeight - 80;
+  routebar.classList.toggle("show", past);
+  planBtn.classList.toggle("show", past);
 
   var tops = arts.map(docTop);
   var first = tops[0], last = tops[tops.length - 1] + arts[arts.length - 1].offsetHeight - vh * 0.5;
