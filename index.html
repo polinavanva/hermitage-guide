@@ -165,10 +165,13 @@
   .planfab.show { opacity: 1; transform: none; pointer-events: auto; }
   .planfab svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; }
   /* шторка с планом: «ты здесь» и «дальше» по карточке, которая сейчас на экране */
-  .planlb { position: fixed; inset: 0; z-index: 90; background: rgba(20,24,20,.6); display: none; flex-direction: column; justify-content: flex-end; }
+  .planlb { position: fixed; inset: 0; z-index: 90; background: rgba(20,24,20,.6); display: none; flex-direction: column; justify-content: flex-end; touch-action: none; overscroll-behavior: contain; }
   .planlb.open { display: flex; animation: fade .3s forwards; opacity: 0; }
   .sheet { position: relative; width: 100%; max-width: 760px; margin: 0 auto; max-height: 94svh; overflow-y: auto; background: var(--bg2); border: 1px solid var(--line); border-bottom: 0; border-radius: 24px 24px 0 0; padding: 10px 18px calc(20px + env(safe-area-inset-bottom)); animation: sheetUp .4s var(--ease); }
   @keyframes sheetUp { from { transform: translateY(40%); } to { transform: none; } }
+  .sheet { touch-action: pinch-zoom; overscroll-behavior: contain; cursor: grab; user-select: none; -webkit-user-select: none; }
+  .sheet.scrolls { touch-action: pan-y pinch-zoom; cursor: auto; }
+  .sheet .grab, .sheethead { touch-action: none; cursor: grab; }
   .sheet .grab { width: 40px; height: 4px; border-radius: 2px; background: rgba(255,255,255,.3); margin: 0 auto 14px; }
   .sheetclose { position: absolute; top: 12px; right: 12px; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line); background: transparent; color: var(--ink); font-size: 14px; cursor: pointer; }
   .sheethead { padding-right: 46px; }
@@ -661,22 +664,62 @@ function cropBox(k) {
 /* обзор маршрута вверху — статичный */
 drawPlan(document.getElementById("planMain"), { nums: true });
 
+/* пока открыта шторка или увеличение, страница под ними не листается.
+   Запираем именно html: у него overflow-x: hidden, поэтому overflow на body до прокрутки не доходит */
+function lockPage(on) { document.documentElement.style.overflow = on ? "hidden" : ""; }
+
 /* шторка «План» */
-var planlb = document.getElementById("planlb"), planHead = document.getElementById("planHead");
-function closePlan() { planlb.classList.remove("open"); planlb.setAttribute("aria-hidden", "true"); document.body.style.overflow = ""; }
+var planlb = document.getElementById("planlb"), planHead = document.getElementById("planHead"), sheet = planlb.querySelector(".sheet");
+function closePlan() { planlb.classList.remove("open"); planlb.setAttribute("aria-hidden", "true"); lockPage(false); }
 function openPlan() {
+  sheet.style.transition = ""; sheet.style.transform = "";
   var k = curHallIdx, next = halls[k + 1];
   function names(h) { return h.items.map(function (i) { return esc(WORKS[i].short); }).join(" · "); }
   planHead.innerHTML = (k < 0 ? '<span class="kicker">Старт · Иорданская лестница</span>'
       : '<span class="kicker">Ты здесь · зал ' + halls[k].hall + (next ? '' : ' · финал') + '</span>') +
     '<b>' + (next ? 'Дальше: зал ' + next.hall + ' · ' + names(next) : 'Последний зал маршрута: ' + names(halls[k])) + '</b>';
   drawPlan(document.getElementById("planPop"), { from: k, to: k + 1, nums: true });
-  planlb.classList.add("open"); planlb.setAttribute("aria-hidden", "false"); document.body.style.overflow = "hidden";
+  planlb.classList.add("open"); planlb.setAttribute("aria-hidden", "false"); lockPage(true);
+  /* если шторка выше экрана (телефон боком), она листается сама, а тянуть можно за шапку */
+  sheet.classList.toggle("scrolls", sheet.scrollHeight > sheet.clientHeight + 2);
 }
 planBtn.addEventListener("click", openPlan);
 document.getElementById("planClose").addEventListener("click", closePlan);
 planlb.addEventListener("click", function (e) { if (e.target === planlb) closePlan(); });
 document.addEventListener("keydown", function (e) { if (e.key === "Escape" && planlb.classList.contains("open")) closePlan(); });
+/* шторку можно смахнуть вниз */
+(function () {
+  var y0 = null, dy = 0, t0 = 0, dragged = false;
+  sheet.addEventListener("pointerdown", function (e) {
+    if (e.button > 0 || e.target.closest(".sheetclose")) return;
+    if (sheet.classList.contains("scrolls") && !e.target.closest(".grab, .sheethead")) return;
+    y0 = e.clientY; dy = 0; t0 = e.timeStamp; dragged = false;
+  });
+  window.addEventListener("pointermove", function (e) {
+    if (y0 === null) return;
+    dy = e.clientY - y0;
+    if (Math.abs(dy) > 6) dragged = true;
+    if (!dragged) return;
+    sheet.style.transition = "none";
+    sheet.style.transform = "translateY(" + (dy > 0 ? dy : dy / 4) + "px)"; /* вверх — с сопротивлением */
+  });
+  function release(e) {
+    if (y0 === null) return;
+    var speed = dy / Math.max(1, e.timeStamp - t0);
+    y0 = null;
+    if (!dragged) return;
+    setTimeout(function () { dragged = false; }, 0); /* клик сразу после отпускания ещё гасим, следующий — уже нет */
+    sheet.style.transition = "transform .28s var(--ease)";
+    if (dy > Math.min(140, sheet.offsetHeight * 0.3) || (dy > 30 && speed > 0.6)) {
+      sheet.style.transform = "translateY(100%)";
+      setTimeout(closePlan, 240);
+    } else sheet.style.transform = "";
+  }
+  window.addEventListener("pointerup", release);
+  window.addEventListener("pointercancel", release);
+  /* после перетаскивания не считаем это нажатием на зал */
+  sheet.addEventListener("click", function (e) { if (dragged) { e.stopPropagation(); dragged = false; } }, true);
+})();
 
 /* ---------- build: work cards ---------- */
 var main = document.getElementById("works");
@@ -851,11 +894,11 @@ onScroll();
     scale = 1; tx = ty = 0; apply();
     lb.classList.add("open"); lb.classList.remove("zoomed");
     lb.setAttribute("aria-hidden", "false");
-    document.body.style.overflow = "hidden";
+    lockPage(true);
   }
   function close() {
     lb.classList.remove("open"); lb.setAttribute("aria-hidden", "true");
-    document.body.style.overflow = "";
+    lockPage(false);
   }
   frames.forEach(function (f) {
     f.addEventListener("click", function () {
