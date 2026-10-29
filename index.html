@@ -11,10 +11,14 @@
 <!-- первый кадр главного экрана (HERO[0]) начинаем грузить сразу, не дожидаясь скрипта -->
 <link rel="preload" as="image" href="images/hero/01-m.webp" media="(max-width: 759px)" fetchpriority="high">
 <link rel="preload" as="image" href="images/hero/01-d.webp" media="(min-width: 760px)" fetchpriority="high">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800;900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- шрифты лежат рядом с сайтом (fonts/), чтобы гид выглядел так же и без интернета -->
+<link rel="preload" as="font" type="font/woff2" href="fonts/manrope-cyrillic.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/unbounded-cyrillic.woff2" crossorigin>
 <style>
+  @font-face { font-family: "Manrope"; font-weight: 400 700; font-display: swap; src: url(fonts/manrope-cyrillic.woff2) format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+  @font-face { font-family: "Manrope"; font-weight: 400 700; font-display: swap; src: url(fonts/manrope-latin.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+  @font-face { font-family: "Unbounded"; font-weight: 600 900; font-display: swap; src: url(fonts/unbounded-cyrillic.woff2) format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+  @font-face { font-family: "Unbounded"; font-weight: 600 900; font-display: swap; src: url(fonts/unbounded-latin.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
   :root {
     --bg: #2c322b;
     --bg2: #343b33;
@@ -216,6 +220,24 @@
   .player.missing { opacity: .55; }
   .player.missing .play { cursor: default; }
   .player.missing .ptitle::after { content: " · аудио скоро появится"; font-weight: 500; color: var(--muted); }
+  .player.offline .pmid { opacity: .55; }
+  .player.offline .ptitle::after { content: " · нет сети, запись не скачана"; font-weight: 500; color: var(--muted); }
+
+  /* офлайн: скачать гид заранее */
+  .offline { margin-top: 44px; padding: 26px 26px 24px; border: 1px solid var(--line); border-radius: 24px; background: rgba(255,255,255,.04); }
+  .offline[hidden] { display: none; }
+  .offline h3 { font-family: var(--display); font-weight: 800; text-transform: uppercase; line-height: 1.08; font-size: clamp(20px, 3.2vw, 26px); margin: 12px 0 0; }
+  .intro .offline p { font-size: 16px; line-height: 1.6; margin: 12px 0 0; }
+  .intro .offline .offnote { font-size: 13px; color: var(--muted); }
+  .offline p[hidden] { display: none; }
+  .offrow { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-top: 20px; }
+  .offrow .pill[disabled] { cursor: default; transform: none; opacity: .85; }
+  .offrow [hidden] { display: none; }
+  .offbar { display: none; height: 3px; margin-top: 16px; border-radius: 3px; background: rgba(255,255,255,.1); overflow: hidden; }
+  .offbar i { display: block; width: 0; height: 100%; background: #fff; transition: width .3s; }
+  .offline.busy .offbar { display: block; }
+  .offdel { border: 0; background: none; padding: 0; color: var(--muted); font-size: 13px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+  .offline.done .kicker::before { content: "✓ "; }
 
   /* footer */
   footer { border-top: 1px solid var(--line); text-align: center; }
@@ -265,6 +287,7 @@
     footer .h2 { font-size: 30px; }
     .intro { padding-top: 64px; padding-bottom: 50px; }
     .intro p { font-size: 17px; }
+    .offline { margin-top: 34px; padding: 22px 18px 20px; border-radius: 20px; }
     .work { padding-top: 56px; padding-bottom: 32px; }
     footer.wrap { padding-top: 56px; }
     .work .text { font-size: 17px; }
@@ -335,6 +358,18 @@
   <span class="kicker lg reveal">Приветствие</span>
   <p class="reveal">Привет! Я — Полина, искусствовед, живу в Петербурге. Я люблю Эрмитаж за то, что каждый раз нахожу здесь что-то новое. Но музей огромный: если идти куда глаза глядят, за два часа устанешь и главного не увидишь.</p>
   <p class="reveal">Поэтому я собрала 12 работ, к которым возвращаюсь снова и снова, и истории о них, которые рассказала бы тебе, если бы мы пошли вместе. Считай, что так и есть: надевай наушники и следуй маршруту 🤍</p>
+  <div class="offline reveal" id="offline" hidden>
+    <span class="kicker" id="offKicker">Перед походом</span>
+    <h3 id="offTitle">Скачай гид на телефон</h3>
+    <p id="offLead">В некоторых залах Эрмитажа не ловит интернет, и аудио там может не включиться. Сохрани гид заранее, пока есть связь: дома, в&nbsp;отеле или у&nbsp;входа в&nbsp;музей. Тогда истории, картины и план будут работать даже в&nbsp;авиарежиме.</p>
+    <p id="offText" hidden></p>
+    <div class="offrow">
+      <button class="pill white" id="offBtn">Скачать гид · 31 МБ</button>
+      <button class="offdel" id="offDel" hidden>Удалить с телефона</button>
+    </div>
+    <div class="offbar"><i id="offBar"></i></div>
+    <p class="offnote" id="offNote">Лучше по Wi‑Fi, в&nbsp;день визита или накануне. Пока идёт загрузка, не закрывай страницу.</p>
+  </div>
 </section>
 
 <section class="wrap scheme" id="route">
@@ -815,13 +850,21 @@ document.querySelectorAll("img[data-fallback]").forEach(function (im) {
     audio.addEventListener("ended", function () { el.classList.remove("playing"); });
     audio.addEventListener("error", function () {
       extIdx++;
-      if (extIdx < EXTS.length) { audio.src = el.dataset.src + EXTS[extIdx]; audio.load(); }
-      else el.classList.add("missing");
+      if (extIdx < EXTS.length) { audio.src = el.dataset.src + EXTS[extIdx]; audio.load(); return; }
+      /* ни один формат не открылся: либо записи нет, либо пропала сеть, а гид не скачан */
+      el.classList.remove("playing");
+      fetch(el.dataset.src + EXTS[0], { method: "HEAD" }).then(function (r) {
+        el.classList.add(r.status === 404 ? "missing" : "offline");
+      }, function () { el.classList.add("offline"); });
     });
     el.querySelector(".play").addEventListener("click", function () {
       if (el.classList.contains("missing")) return;
+      if (el.classList.contains("offline")) {
+        el.classList.remove("offline");
+        extIdx = 0; audio.src = el.dataset.src + EXTS[0];
+      }
       attach();
-      if (audio.paused) { audio.playbackRate = rate; audio.play(); } else { audio.pause(); }
+      if (audio.paused) { audio.playbackRate = rate; audio.play().catch(function () {}); } else { audio.pause(); }
     });
     var dragging = false;
     function seek(ev) {
@@ -836,6 +879,119 @@ document.querySelectorAll("img[data-fallback]").forEach(function (im) {
     el.querySelectorAll(".speeds button").forEach(function (b) { b.addEventListener("click", function () { setRate(parseFloat(b.dataset.rate)); }); });
   });
   setRate(rate);
+})();
+
+/* ---------- офлайн: гид целиком на телефоне ----------
+   В части залов нет связи. По кнопке кладём в Cache Storage страницу, шрифты, картинки
+   и все 12 записей, а sw.js отдаёт их оттуда, когда сети нет. Имена кэшей — как в sw.js */
+(function () {
+  var PAGES = "guide-pages-v1", FILES = "guide-files-v1";
+  var box = document.getElementById("offline"), btn = document.getElementById("offBtn"), del = document.getElementById("offDel");
+  var kicker = document.getElementById("offKicker"), title = document.getElementById("offTitle"), text = document.getElementById("offText");
+  var lead = document.getElementById("offLead"), note = document.getElementById("offNote"), bar = document.getElementById("offBar");
+  var LABEL = btn.textContent;
+  box.hidden = false;
+  function say(t) { text.hidden = !t; text.textContent = t || ""; }
+  if (!("serviceWorker" in navigator) || !window.caches) {
+    /* встроенные браузеры (Instagram, Telegram на iPhone) сайты не сохраняют */
+    say("Этот браузер не умеет сохранять сайты — так бывает, если ссылка открыта внутри Instagram или Telegram. Открой гид в\u00a0Safari или Chrome (меню «⋯» → «Открыть в\u00a0браузере») и скачай там.");
+    btn.hidden = true; note.hidden = true;
+    return;
+  }
+  window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); });
+
+  var page = new URL("./", location.href).href;
+  var files = ["fonts/manrope-cyrillic.woff2", "fonts/manrope-latin.woff2", "fonts/unbounded-cyrillic.woff2", "fonts/unbounded-latin.woff2"];
+  WORKS.forEach(function (w, i) { files.push("audio/" + pad(i + 1) + ".mp3", workSrc(i, "s"), workSrc(i, MOBILE ? "m" : "l")); });
+  HERO.forEach(function (idx) { files.push("images/hero/" + pad(idx + 1) + "-lo.webp", "images/hero/" + pad(idx + 1) + "-" + (MOBILE ? "m" : "d") + ".webp"); });
+  /* примерные размеры, пока сервер не сказал точный — только для полоски прогресса */
+  function guess(u) { return /\.mp3$/.test(u) ? 2.5e6 : /\.woff2$/.test(u) ? 3e4 : 8e4; }
+
+  function state(name) {
+    box.classList.toggle("busy", name === "busy");
+    box.classList.toggle("done", name === "done");
+    btn.hidden = name === "done"; del.hidden = name !== "done";
+    btn.disabled = name === "busy";
+    note.hidden = lead.hidden = name === "done";
+    kicker.textContent = name === "done" ? "Готово" : "Перед походом";
+    title.textContent = name === "done" ? "Гид сохранён на телефоне" : "Скачай гид на телефон";
+    if (name === "done") say("Теперь он работает и без интернета: просто открой эту страницу в\u00a0том же браузере — аудио, картины и план на месте.");
+  }
+  function missing() {
+    return Promise.all([caches.open(PAGES), caches.open(FILES)]).then(function (cs) {
+      return Promise.all([cs[0].match(page)].concat(files.map(function (u) { return cs[1].match(u, { ignoreVary: true }); })));
+    }).then(function (hits) {
+      return { page: !hits[0], files: files.filter(function (u, i) { return !hits[i + 1]; }) };
+    });
+  }
+  missing().then(function (m) {
+    if (!m.page && !m.files.length) state("done");
+    else if (files.some(function (u) { return /\.mp3$/.test(u) && m.files.indexOf(u) === -1; })) btn.textContent = "Докачать гид";
+  }).catch(function () {});
+
+  var running = false;
+  btn.addEventListener("click", function () {
+    if (running) return;
+    running = true;
+    state("busy"); say("");
+    if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(function () {});
+    var lock = null;
+    if (navigator.wakeLock) navigator.wakeLock.request("screen").then(function (l) { lock = l; }, function () {});
+    var total = 0, got = 0, fresh = 0; /* fresh — скачано за это нажатие, got — вместе с уже сохранённым */
+    function draw() {
+      var pct = total ? Math.min(99, Math.floor(got / total * 100)) : 0;
+      bar.style.width = pct + "%";
+      btn.textContent = "Скачиваю… " + pct + "%";
+    }
+    function grab(cache, u) {
+      var est = guess(u);
+      return fetch(u).then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        var len = +r.headers.get("content-length") || 0;
+        if (len) { total += len - est; est = len; }
+        var reader = r.clone().body.getReader(), seen = 0;
+        function pump() {
+          return reader.read().then(function (c) {
+            if (c.done) return;
+            seen += c.value.length; got += c.value.length; fresh += c.value.length; draw();
+            return pump();
+          });
+        }
+        return Promise.all([cache.put(u, r), pump()]).then(function () { total += seen - est; draw(); });
+      });
+    }
+    missing().then(function (m) {
+      files.forEach(function (u) { var g = guess(u); total += g; if (m.files.indexOf(u) === -1) got += g; });
+      draw();
+      return Promise.all([caches.open(PAGES), caches.open(FILES)]).then(function (cs) {
+        var queue = m.files.slice();
+        function worker() { var u = queue.shift(); return u ? grab(cs[1], u).then(worker) : null; }
+        return Promise.all([
+          fetch(page).then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return cs[0].put(page, r); }),
+          worker(), worker(), worker()
+        ]);
+      });
+    }).then(missing).then(function (m) {
+      if (m.page || m.files.length) throw new Error("не всё сохранилось");
+      state("done");
+    }).catch(function (err) {
+      state("idle");
+      var pct = total ? Math.min(99, Math.floor(got / total * 100)) : 0;
+      if (err && err.name === "QuotaExceededError") say("На телефоне не хватает места: нужно около 31 МБ. Освободи немного памяти и нажми ещё раз.");
+      else if (!fresh || !navigator.onLine) say("Сейчас нет интернета. Подключись к сети и нажми ещё раз — скачанное не потеряется.");
+      else say("Связь прервалась на " + pct + "%. Нажми — докачаю остальное.");
+      btn.textContent = got ? "Докачать гид" : LABEL;
+    }).then(function () {
+      running = false;
+      if (lock) lock.release().catch(function () {});
+    });
+  });
+
+  del.addEventListener("click", function () {
+    Promise.all([caches.delete(FILES), caches.delete(PAGES)]).then(function () {
+      state("idle"); say(""); btn.textContent = LABEL; bar.style.width = "0";
+    });
+  });
 })();
 
 /* ---------- scroll reveal + «проявление» картин ---------- */
